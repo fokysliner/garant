@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel — Користувачі</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header class="dash-header">
+    <div class="header-container">
+      <nav class="dash-nav">
+        <a href="dashboard.html">Панель користувача</a>
+        <a href="admin.html" class="active">Адмін</a>
+      </nav>
+    </div>
+  </header>
+  <main class="dash-main">
+    <h1>Зареєстровані користувачі</h1>
+    <table id="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Ім'я</th>
+          <th>Email</th>
+          <th>Роль</th>
+          <th>Дата реєстрації</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>

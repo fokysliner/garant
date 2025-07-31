@@ -1,0 +1,73 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f9f8fc;
+  margin: 0;
+  color: #433362;
+}
+
+.instructions-main {
+  max-width: 860px;
+  margin: 36px auto 36px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px #edeaff;
+  padding: 38px 32px 40px 32px;
+}
+
+.instructions-title {
+  color: #7c4ae4;
+  font-size: 2.4em;
+  font-weight: 700;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.instructions-section {
+  margin-bottom: 38px;
+}
+
+.instructions-subtitle {
+  color: #784ee9;
+  font-size: 1.35em;
+  font-weight: 600;
+  margin-bottom: 10px;
+  margin-top: 24px;
+}
+
+.instructions-smalltitle {
+  color: #4f3c7e;
+  font-size: 1.06em;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+.instructions-section ul, .instructions-section ol {
+  margin-top: 0;
+  margin-bottom: 18px;
+  padding-left: 22px;
+}
+
+.instructions-section p {
+  margin-top: 0;
+  margin-bottom: 10px;
+  line-height: 1.56;
+}
+
+@media (max-width: 700px) {
+  .instructions-main {
+    padding: 18px 8px 24px 8px;
+  }
+  .instructions-title {
+    font-size: 1.5em;
+  }
+}
+
+body {
+  background-image: url('mage.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+

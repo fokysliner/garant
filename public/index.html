@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GrandGarant — Безпечні угоди для бізнесу та приватних осіб</title>
+  <link rel="stylesheet" href="styles.css" />
+
+<script defer src="script.js"></script>
+</head>
+<body>
+ 
+
+<div id="login-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>Вхід в особистий кабінет</h2>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="Ваш E-mail" required />
+      <input type="password" id="login-password" placeholder="Пароль" required />
+      <label>
+        <input type="checkbox" id="login-remember" />
+        Запам’ятати мене
+      </label>
+      <button type="submit">Увійти</button>
+      <p id="login-error" class="error-message"></p>
+      <p>
+        Ще не зареєстровані?
+        <a href="#" class="register-btn">Зареєструватися</a>
+      </p>
+    </form>
+
+  </div>
+</div>
+
+
+<div class="hamburger">
+  <span></span><span></span><span></span>
+</div>
+<nav class="mobile-nav">
+  <a href="#about">Про нас</a>
+  <a href="#how-it-works">Як це працює</a>
+  <a href="#faq">FAQ</a>
+  <a href="#contact">Контакти</a>
+  <a href="#login" class="login-btn">Вхід/Реєстрація</a>
+</nav>
+
+
+
+<div id="to-top">
+
+  <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h16z"/></svg>
+</div>
+
+  <header class="hero">
+    <h1>Сервіс безпечних угод</h1>
+    <p>для бізнесу та приватних осіб</p>
+    <a href="#how-it-works" class="btn">Дізнатися як це працює</a>
+  </header>
+
+
+<section id="about" class="hero-with-bg">
+  <img src="fon2.png" alt="" class="hero-bg">
+  <div class="hero-content">
+    <h2>Швидко. Безпечно. Надійно.</h2>
+    <p>Схвалюйте умови угоди швидше та простіше, проводьте безпечні платежі та відчувайте себе захищеними на всіх етапах — до виконання зобов’язань усіма учасниками.</p>
+    </div>
+
+</section>
+
+
+<section id="how-it-works" class="with-bg">
+  <div class="content-wrapper">
+    <h2>Як це працює?</h2>
+    <ol>
+      <li>
+        <strong>Створення та узгодження угоди</strong><br/>
+        Ініціатор створює угоду та відправляє запрошення партнеру.
+      </li>
+      <li>
+        <strong>Оплата покупцем</strong><br/>
+        Покупець надсилає кошти на рахунок сервісу — ми їх резервуємо.
+      </li>
+      <li>
+        <strong>Виконання угоди</strong><br/>
+        Продавець бачить, що кошти заблоковані, і виконує свої зобов’язання.
+      </li>
+      <li>
+        <strong>Завершення угоди</strong><br/>
+        Після підтвердження або автоматично за умовами — гроші переводяться продавцю.
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="news" class="with-bg">
+  <h2>Останні новини</h2>
+
+  <article class="news-item">
+    <button class="news-toggle">
+      <span>Відновлення доступу</span>
+      <svg class="icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+    </button>
+    <div class="news-content">
+      <p>Учасники могли спостерігати тимчасові проблеми</p>
+      <p>Якщо раптом знову зіткнетеся зверніться до адміністрації</p>
+    </div>
+  </article>
+
+  <article class="news-item">
+    <button class="news-toggle">
+      <span>Графік роботи в червні 2025</span>
+      <svg class="icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+    </button>
+    <div class="news-content">
+      <ul>
+        <li>☀ Усі угоди та оплата картами — цілодобово, без вихідних.</li>
+        <li>12–15 червня 2025: прийом коштів </li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Графік роботи у травні 2025</h3>
+    <p>Прийом платежів картами та проведення угод — цілодобово й без вихідних.</p>
+    <ul>
+      <li>1–4 травня: банківські перекази не обробляються (заявки приймаються, але виконуються в перший робочий день).</li>
+      <li>5–7 травня: працюємо в звичайному режимі.</li>
+      <li>8–11 травня: знову пауза (як у 1–4 травня).</li>
+      <li>З 12 травня: повне відновлення роботи.</li>
+    </ul>
+  </article>
+</section>
+
+
+<section id="payment-methods" class="payment-section">
+  <h2>Способи оплати</h2>
+  <div class="payments">
+    <div class="payment-item">
+      <img src="visa.png" alt="Visa">
+      <h3>Visa</h3>
+      <p>Миттєве поповнення карткою Visa з мінімальною комісією.</p>
+    </div>
+    <div class="payment-item">
+      <img src="mastercard.png" alt="MasterCard">
+      <h3>MasterCard</h3>
+      <p>Швидкі платежі та безпека транзакцій з MasterCard.</p>
+    </div>
+    <div class="payment-item">
+      <img src="yoo-money.png" alt="ЮMoney">
+      <h3>Криптовалюта</h3>
+      <p>USDT (TRC20) — стабільна криптовалюта на блокчейні Tron, мінімальні комісії та миттєві перекази.</p>
+    </div>
+    <div class="payment-item">
+      <img src="bank-transfer.png" alt="Банківський переказ">
+      <h3>Банківський переказ</h3>
+      <p>Переказ за реквізитами на розрахунковий рахунок компанії.</p>
+    </div>
+    <div class="payment-item">
+      <img src="cash.png" alt="Готівка">
+      <h3>Готівка</h3>
+      <p>Оплата готівкою через каси партнерів по всій країні.</p>
+    </div>
+  </div>
+</section>
+
+
+<section id="faq" class="faq-bg">
+  <h2>Часті запитання</h2>
+  <div class="faq-group">
+    <h3>Загальні питання</h3>
+    <dl>
+      <dt>Хто сплачує комісію?</dt>
+      <dd>Ви самі вирішуєте, хто сплачує комісію за угоду: Покупець, Продавець або обидва в рівних частках (50/50).</dd>
+
+      <dt>Як оплатити угоду?</dt>
+      <dd>
+        <ul>
+          <li><strong>Юридичні особи</strong> — банківський переказ на рахунок Сервісу.</li>
+          <li><strong>Приватні особи</strong> — будь-який популярний спосіб: готівка, картка, електронні гаманці (наприклад ЮMoney) тощо.</li>
+        </ul>
+      </dd>
+
+      <dt>Куди надходять кошти Продавця?</dt>
+      <dd>
+        Після успішного завершення угоди та зарахування коштів на внутрішній рахунок Продавця він може:
+        <ul>
+          <li>Накопичувати суму для подальших переказів однією загальною платежем.</li>
+          <li>Вивести кошти на сторонні рахунки: електронний гаманець, розрахунковий рахунок або прив’язану картку (для бізнес-клієнтів — лише на розрахунковий рахунок юридичної особи чи ФОП).</li>
+          <li>Розрахуватися цими коштами за інші угоди, де він виступає Покупцем.</li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="faq-group">
+    <h3>Якщо щось пішло не так…</h3>
+    <dl>
+      <dt>Ми хочемо скасувати угоду!</dt>
+      <dd>
+        Якщо обидві сторони згодні, угоду можна скасувати в будь-який момент через особистий кабінет. Ініціювати скасування може Покупець або Продавець, але інша сторона має підтвердити операцію.
+      </dd>
+
+      <dt>Що буде, якщо Покупець не підтвердить виконання?</dt>
+      <dd>
+        Якщо Продавець виконав свої зобов’язання, а Покупець не підтвердив отримання (наприклад, товару), кошти автоматично надійдуть Продавцю у строк, узгоджений при створенні угоди.
+      </dd>
+
+      <dt>Чи можна змінити умови угоди після її початку?</dt>
+      <dd>
+        За згодою обох сторін можна:
+        <ul>
+          <li>Збільшити строк виконання угоди;</li>
+          <li>Змінити суму угоди.</li>
+        </ul>
+      </dd>
+
+      <dt>Я прийняв неякісний товар. Що робити?</dt>
+      <dd>
+        Покупець може:
+        <ul>
+          <li>Домовитись про зменшення суми угоди;</li>
+          <li>Узгодити повернення повної суми коштів.</li>
+        </ul>
+      </dd>
+
+      <dt>Продавець відмовляється повертати гроші?</dt>
+      <dd>
+        Покупець може ініціювати процедуру оскарження до завершення строку угоди — це підтверджує намір повернути сплачені кошти.
+      </dd>
+    </dl>
+  </div>
+
+  <div class="faq-group">
+    <h3>Питання бізнес-сегмента</h3>
+    <dl>
+      <dt>Чи можна працювати з ПДВ?</dt>
+      <dd>
+        Так. У Сервісі угоди можуть містити нарахований і виділений ПДВ. Ви сплачуєте всю суму (включно з ПДВ), а постачальник підтверджує відображення податку у звітних документах.
+      </dd>
+
+      <dt>Чи можна віднести комісію Сервісу до витрат?</dt>
+      <dd>
+        Так. Електронні форми звітних документів доступні в особистому кабінеті. За запитом надамо засвідчені паперові копії.
+      </dd>
+
+      <dt>У якій формі укладається договір?</dt>
+      <dd>
+        Договір є публічною офертою («Користувацька угода»), до якої Ви приєднуєтеся в електронній формі. За потреби надамо друкований варіант із печаткою.
+      </dd>
+
+      <dt>Хто може створити угоду від імені компанії?</dt>
+      <dd>
+        Будь-який співробітник у своєму кабінеті. Гроші обліковуються окремо по:
+        <ul>
+          <li>приватному рахунку співробітника;</li>
+          <li>корпоративному рахунку компанії.</li>
+        </ul>
+        Додаткові корпоративні акаунти не потрібні.
+      </dd>
+
+      <dt>Можуть кілька співробітників працювати від імені однієї компанії?</dt>
+      <dd>
+        Так. Кожен співробітник веде окремі субрахунки — приход і витрати фіксуються індивідуально.
+      </dd>
+    </dl>
+  </div>
+</section>
+
+<section id="contact" class="with-bg-contact">
+  <h2>Контакти</h2>
+  <ul>
+    <li>Підтримка: <a href="mailto:info@GrandGarant.com">info@GrandGarant.com</a></li>
+    <li>Співробітництво: <a href="mailto:ceo@GrandGarant.com">ceo@GrandGarant.com</a></li>
+  </ul>
+</section>
+
+
+<footer class="site-footer">
+  <div class="copyright">
+    © 2018–2025 GrandGarant
+  </div>
+  <nav class="footer-links">
+    <a href="/about">Про нас</a>
+    <a href="/how-it-works">Як це працює</a>
+    <a href="/faq">FAQ</a>
+    <a href="/contact">Контакти</a>
+  </nav>
+</footer>
+
+<button id="scroll-up" title="На початок">▲</button>
+
+
+
+<div id="register-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" data-target="register-modal">&times;</span>
+    <h2>Реєстрація</h2>
+    <form id="register-form">
+      <input type="text" id="reg-firstname" placeholder="Ім'я *" required />
+      <input type="text" id="reg-lastname"  placeholder="Прізвище *" required />
+      <input type="text" id="reg-city"      placeholder="Місто *" required />
+      <input type="tel"  id="reg-phone"     placeholder="+38 (___) ___-__-__" pattern="\+?\d{0,}" />
+      <input type="email" id="reg-email"    placeholder="E-mail *" required />
+      <input type="password" id="reg-password" placeholder="Пароль (мін. 8 символів) *" minlength="8" required />
+      <label>
+        <input type="checkbox" id="reg-terms" required />
+        Погоджуюсь з <a href="/terms">Користувацькою угодою</a> та <a href="/privacy">Політикою конфіденційності</a> *
+      </label>
+      <button type="submit">Зареєструватися</button>
+      <p id="register-error" class="error-message"></p>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

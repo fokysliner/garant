@@ -1,0 +1,148 @@
+/* Стилі для таблиці */
+#users-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+  background: #fff;
+  box-shadow: 0 2px 10px #eaeaea;
+  border-radius: 12px;
+  overflow: hidden;
+  display: block;
+  max-height: 64vh;
+  overflow-y: auto;
+}
+
+/* Sticky шапка */
+#users-table thead, #users-table th {
+  position: sticky;
+  top: 0;
+  background: #f3effc;
+  z-index: 1;
+}
+
+#users-table th, #users-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 1.05rem;
+  text-align: left;
+}
+
+#users-table th {
+  color: #422285;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+#users-table tr:last-child td {
+  border-bottom: none;
+}
+
+#users-table tr {
+  transition: background 0.17s;
+  cursor: pointer;
+}
+
+#users-table tr:hover {
+  background: #edeaff;
+}
+
+#users-table tr.selected {
+  background: #d8cffd !important;
+}
+
+/* Модальне вікно */
+.modal-backdrop {
+  position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(44,24,87, 0.18);
+  z-index: 99;
+  display: flex; align-items: flex-start; justify-content: center;
+  overflow-y: auto !important;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 40px #b8a7ec88;
+  padding: 36px 28px 26px 28px;
+  min-width: 340px;
+  max-width: 560px; /* або більше */
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-close {
+  position: absolute; right: 18px; top: 14px;
+  font-size: 1.65rem; background: none; border: none; color: #884eff;
+  cursor: pointer;
+}
+.form-label { font-weight: 600; color: #7b37e9; margin-bottom: 5px; display: block;}
+.modal-content input {
+  width: 100%; padding: 8px 12px; margin-bottom: 14px;
+  border: 1px solid #d7cafd; border-radius: 7px; font-size: 1rem;
+}
+.modal-actions {
+  display: flex; gap: 16px; margin-top: 18px;
+}
+.btn-primary {
+  background: #7b37e9; color: #fff; border: none; border-radius: 7px; padding: 9px 18px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 2px 8px #eaeaff;
+  transition: background 0.16s;
+}
+.btn-primary:hover {
+  background: #6529c9;
+}
+.btn-outline {
+  background: none; color: #7b37e9; border: 1.5px solid #7b37e9;
+  border-radius: 7px; padding: 9px 18px; font-weight: 600; cursor: pointer;
+  transition: background 0.16s, color 0.16s;
+}
+.btn-outline:hover {
+  background: #edeaff;
+  color: #6529c9;
+}
+body {
+  min-height: 100vh;
+  height: auto;
+  background: #edeaff;
+  font-family: 'Inter', Arial, sans-serif;
+  overflow-y: auto !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Додатково — main блок, якщо є: */
+.dash-main {
+  min-height: 80vh;
+  padding-bottom: 50px;
+}
+
+/* Блок угоди у модалці */
+.deal-item-admin {
+  margin-bottom: 22px;
+  background: #f7f2ff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  word-break: break-word;
+  overflow-x: auto;
+  font-size: 1.09rem;
+  box-shadow: 0 2px 14px #ece7fd80;
+}
+
+.deal-item-admin b {
+  color: #6b32c4;
+}
+
+.deal-item-admin select,
+.deal-item-admin button {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 700px) {
+  .deal-item-admin {
+    font-size: 0.97rem;
+    padding: 12px 6px;
+  }
+}

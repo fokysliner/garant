@@ -1,0 +1,1350 @@
+/* == Скидання стилів == */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  background: #f9f9f9;
+  position: relative;
+}
+
+/* == Хедер (герой) == */
+header.hero {
+  position: relative;
+  height: 60vh;
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+}
+header.hero h1 {
+  font-size: 1.75rem;
+  margin-top: 2rem;
+}
+header.hero p {
+  font-size: 1rem;
+  margin: 0.5rem 0 1.5rem;
+}
+header.hero .btn {
+  background: #ffd700;
+  color: #333;
+}
+
+/* == Логотип і гамбургер == */
+header .logo {
+  display: inline-block;
+  margin-top: 0.5rem;
+  width: 120px;
+  height: 40px;
+  /* background-image: url('../images/logo-moneymoo.svg'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.hamburger {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1100;
+  width: 30px;
+  height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.hamburger span {
+  display: block;
+  height: 4px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* == Мобільне меню == */
+nav.mobile-nav {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  transition: right .3s ease;
+  padding: 3rem 1rem;
+  z-index: 1050;
+}
+nav.mobile-nav.open {
+  right: 0;
+}
+nav.mobile-nav a {
+  display: block;
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+  color: #357abd;
+  text-decoration: none;
+}
+
+/* == Секції == */
+section {
+  padding: 3rem 1rem;
+  max-width: 600px;
+  margin: 0 auto 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+section h2 {
+  font-size: 1.5rem;
+  color: #4a2c9f;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+section p,
+section li {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+/* == Як це працює: кроки == */
+#how-it-works ol {
+  list-style: none;
+  counter-reset: step;
+  padding-left: 0;
+}
+#how-it-works li {
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: 2rem;
+}
+#how-it-works li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2rem;
+  background: #4a2c9f;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+#how-it-works li strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* == Новини, графік, контакти == */
+#news article,
+#schedule,
+#contact ul {
+  margin-top: 1rem;
+}
+#news h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* == FAQ == */
+#faq dl {
+  margin-top: 1rem;
+}
+#faq dt {
+  background: #f3f0fa;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+#faq dd {
+  padding: 0.75rem;
+  margin: 0;
+  display: none;
+  border-left: 4px solid #4a2c9f;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+/* == Кнопки загалом == */
+.btn,
+.link-btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  text-decoration: none;
+  text-align: center;
+  transition: background .2s, border .2s;
+}
+.btn {
+  background: #ffd700;
+  color: #333;
+  border: none;
+}
+.btn:hover {
+  background: #ffc000;
+}
+.link-btn {
+  background: transparent;
+  color: #4a2c9f;
+  border: 2px solid #4a2c9f;
+}
+.link-btn:hover {
+  background: #4a2c9f;
+  color: #fff;
+}
+
+/* == Кнопка “Наверх” == */
+#to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 44px;
+  height: 44px;
+  background: rgba(74,44,159,0.85);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .3s, visibility .3s;
+  z-index: 1100;
+}
+#to-top.visible {
+  visibility: visible;
+  opacity: 1;
+}
+#to-top svg {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+/* == Медіа-запити == */
+@media (max-width: 480px) {
+  header.hero { height: 50vh; }
+  section { padding: 2rem 0.5rem; }
+  #how-it-works li { padding-left: 2.5rem; }
+  #how-it-works li::before { width: 1.8rem; height: 1.8rem; font-size: 0.9rem; }
+}
+header.hero {
+  position: relative;
+  /* замість градієнта */
+  background: url('fon.png') no-repeat center center;
+  background-size: cover;
+  color: #fff; /* Переконайтеся, що текст видно на фоні */
+  /* інші ваші стилі... */
+}
+.hero-with-bg {
+  position: relative;
+  width: 100%;
+  height: 400px; /* або auto під контент */
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+.hero-content {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+  z-index: 2;
+  padding: 0 1rem;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+.hero-content {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+
+  /* Ось цей блок — напівпрозорий білий фон */
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+}
+
+/* Підсилюємо читабельність тексту за рахунок тіні */
+.hero-content h2,
+.hero-content p {
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+/* styles.css */
+.with-bg {
+  position: relative;
+  padding: 4rem 1rem;           /* відступи всередині */
+  overflow: hidden;
+  color: #333;
+}
+
+.with-bg::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120%;                  /* трохи більше, щоб покрити всю ширину */
+  height: 100%;
+  background: url('fon3.png') no-repeat center top;
+  background-size: cover;
+  opacity: 0.3;                 /* робимо фон світлішим */
+  z-index: 1;
+}
+
+.with-bg .content-wrapper {
+  position: relative;
+  z-index: 2;                   /* текст над фоном */
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.8); /* напівпрозорий білий фон для читабельності */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.with-bg h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #4a2c9f;
+}
+
+.with-bg ol {
+  list-style: none;
+  counter-reset: step;
+}
+
+.with-bg li {
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.with-bg li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem; height: 2rem;
+  background: #4a2c9f;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+/* CSS — вкінці styles.css */
+
+/* Робимо контейнер відносним, щоб псевдоелемент міг позаду розташуватись */
+#news.with-bg {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 1rem;
+}
+
+/* Псевдоелемент для фону */
+#news.with-bg::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120%;            /* трохи більше за ширину секції */
+  height: 100%;
+  background: url('fon4.png') no-repeat center top;
+  background-size: cover;
+  opacity: 0.15;         
+  z-index: 1;            
+}
+
+/* Контент поверх фону */
+#news.with-bg > * {
+  position: relative;
+  z-index: 2;
+}
+/* АКОРДЕОН: новини */
+.news-item {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.news-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.news-toggle .icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: #4a2c9f;
+  stroke-width: 2;
+  transition: transform 0.3s;
+}
+
+/* Контент схований за замовчуванням */
+.news-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding-left: 1rem;
+}
+
+/* Коли відкрито */
+.news-item.open .news-content {
+  max-height: 500px; /* достатньо, щоб вміст помістився */
+  margin-bottom: 1rem;
+}
+
+.news-item.open .news-toggle .icon {
+  transform: rotate(180deg);
+}
+/* == Способи оплати == */
+.payment-section {
+  padding: 3rem 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.payment-section h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #4a2c9f;
+  margin-bottom: 2rem;
+}
+
+.payments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.payment-item {
+  flex: 0 1 150px;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 6px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.payment-item img {
+  width: 60px;
+  height: auto;
+  margin-bottom: 0.75rem;
+}
+
+.payment-item h3 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.payment-item p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.3;
+}
+
+/* Ефект при наведенні */
+.payment-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Адаптив */
+@media (max-width: 600px) {
+  .payments {
+    gap: 1rem;
+  }
+  .payment-item {
+    flex: 0 1 45%;
+  }
+}
+/* Секція «Способи оплати» з фоном logo5.png */
+#payment-methods {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 1rem;
+}
+
+#payment-methods::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 100%;
+  background: url('logo5.png') no-repeat center top;
+  background-size: cover;
+  opacity: 0.15;   /* робить фон ніжним, щоб іконки були контрастні */
+  z-index: 1;
+}
+
+/* Весь внутрішній контент поверх фону */
+#payment-methods .payments,
+#payment-methods h2 {
+  position: relative;
+  z-index: 2;
+}
+/* Styles for FAQ */
+#faq {
+  padding: 3rem 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+#faq h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  color: #4a2c9f;
+  margin-bottom: 2rem;
+}
+
+.faq-group {
+  margin-bottom: 2rem;
+}
+
+.faq-group h3 {
+  font-size: 1.25rem;
+  color: #357abd;
+  margin-bottom: 1rem;
+}
+
+.faq-group dl dt {
+  font-weight: bold;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.faq-group dl dd {
+  margin: 0.5rem 0 1rem 1rem;
+  line-height: 1.4;
+}
+
+.faq-group dl dd ul {
+  list-style: disc inside;
+  margin-top: 0.5rem;
+}
+
+.faq-group dl dd ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* Optional: toggle answers */
+.faq-group dl dt + dd {
+  display: none;
+}
+.faq-group dl dt.active + dd {
+  display: block;
+}
+/* == Фон для секції FAQ == */
+#faq.faq-bg {
+  /* основний білий задній фон з невеликим закругленням */
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  padding: 3rem 1rem;
+  
+  /* тут вказуємо вашу фонку */
+  background-image: url('fon5.png');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+}
+
+/* Переконаємося, що весь текст і accordion лежать поверх фону */
+#faq.faq-bg > * {
+  position: relative;
+  z-index: 1;
+}
+/* Контейнер для секції з фоном */
+#contact.with-bg-contact {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 1rem;      /* внутрішні відступи */
+  background: #fff;        /* базовий колір фону */
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+/* Фонове зображення через псевдоелемент */
+#contact.with-bg-contact::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 100%;
+  background: url('fon6.png') no-repeat center top;
+  background-size: cover;
+  opacity: 0.15;    /* регулюйте інтенсивність */
+  z-index: 1;
+}
+
+/* Контент поверх фону */
+#contact.with-bg-contact > * {
+  position: relative;
+  z-index: 2;
+}
+/* Базова розмітка для секції контактів */
+#contact.with-bg-contact {
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 1rem;          /* збільшимо відступи */
+  max-width: 800px;
+  margin: 2rem auto;
+  border-radius: 12px;
+  background: #fff;            /* білий базовий фон */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Псевдоелемент із вашим фоном (logo5/fon5.png) */
+#contact.with-bg-contact::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%) rotate(10deg);
+  width: 140%;
+  height: 140%;
+  background: url('fon6.png') no-repeat center center;
+  background-size: cover;
+  opacity: 0.08;               /* дуже ніжний акварельний ефект */
+  z-index: 1;
+}
+
+/* Заголовок */
+#contact.with-bg-contact h2 {
+  position: relative;
+  z-index: 2;
+  font-size: 2rem;
+  color: #4a2c9f;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Список контактів */
+#contact.with-bg-contact ul {
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+#contact.with-bg-contact ul li {
+  background: rgba(74,44,159,0.05);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#contact.with-bg-contact ul li a {
+  color: #357abd;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color .2s;
+}
+
+#contact.with-bg-contact ul li a:hover {
+  color: #4a2c9f;
+}
+
+/* Додаткові маленькі «хмаринки» над фоном */
+#contact.with-bg-contact::after {
+  content: "";
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle at center, rgba(74,44,159,0.1), transparent);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Адаптив */
+@media (max-width: 600px) {
+  #contact.with-bg-contact {
+    padding: 2.5rem 1rem;
+  }
+  #contact.with-bg-contact h2 {
+    font-size: 1.75rem;
+  }
+  #contact.with-bg-contact ul li {
+    font-size: 0.95rem;
+  }
+}
+/* Стилізація мобільних навігаційних посилань */
+nav.mobile-nav a {
+  font-size: 1.1rem;
+  color: #333; /* Темний колір для кращої читаємості */
+  padding: 12px 18px;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+/* При наведенні змінюємо колір фону */
+nav.mobile-nav a:hover {
+  background-color: #4a2c9f; /* Темний фон при наведенні */
+  color: white; /* Змінюємо колір тексту */
+  border-radius: 8px; /* Заокруглені кути */
+}
+
+/* Стилізація кнопки "Вхід/Реєстрація" в гамбургерному меню */
+.login-btn {
+  font-size: 1.2rem;
+  color: #fff;
+  background-color: #4a2c9f;
+  padding: 12px 20px;
+  margin-top: 10px;
+  display: block;
+  text-align: center;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #3a1e74; /* Темніший відтінок при наведенні */
+  transform: scale(1.05); /* Легке збільшення при наведенні */
+}
+
+/* Покращення стилю модального вікна для входу/реєстрації */
+#login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#login-modal .modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#login-modal input[type="text"],
+#login-modal input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+#login-modal button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #4a2c9f;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#login-modal button[type="submit"]:hover {
+  background-color: #3a1e74;
+}
+
+#login-modal .close-btn {
+  font-size: 1.5rem;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Стилі для посилань у модальному вікні */
+#login-modal a {
+  color: #4a2c9f;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* Покращення для кнопки гамбургера */
+.hamburger {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1100;
+  width: 30px;
+  height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 100%;
+  height: 5px;
+  background-color: #fff;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg);
+  top: 8px;
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg);
+  top: -8px;
+}
+
+/* Анімація для мобільного меню */
+nav.mobile-nav.open {
+  right: 0;
+  opacity: 1;
+  transition: right 0.3s ease;
+}
+/* Стилізація модального вікна */
+#login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none; /* Сховуємо модальне вікно за замовчуванням */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Стилізація вмісту модального вікна */
+#login-modal .modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Стиль для кнопки закриття */
+#login-modal .close-btn {
+  font-size: 1.5rem;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Стилі для полів вводу */
+#login-modal input[type="email"],
+#login-modal input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Стилі для кнопки "Вхід" */
+#login-modal button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #4a2c9f;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* При наведенні на кнопку "Вхід" */
+#login-modal button[type="submit"]:hover {
+  background-color: #3a1e74;
+}
+
+/* Стилі для посилань у модальному вікні */
+#login-modal a {
+  color: #4a2c9f;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* Покращення вигляду checkbox */
+#login-modal label {
+  display: block;
+  text-align: left;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+/* Стилізація модального вікна */
+#login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none; /* Сховуємо модальне вікно за замовчуванням */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Стилізація вмісту модального вікна */
+#login-modal .modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Стиль для кнопки закриття */
+#login-modal .close-btn {
+  font-size: 1.5rem;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Стилі для полів вводу */
+#login-modal input[type="email"],
+#login-modal input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Стилі для кнопки "Вхід" */
+#login-modal button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #4a2c9f;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* При наведенні на кнопку "Вхід" */
+#login-modal button[type="submit"]:hover {
+  background-color: #3a1e74;
+}
+
+/* Стилі для посилань у модальному вікні */
+#login-modal a {
+  color: #4a2c9f;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* Покращення вигляду checkbox */
+#login-modal label {
+  display: block;
+  text-align: left;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+.error-message {
+  color: #c00;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+/* Модальне вікно */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right:0; bottom:0;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+}
+.close-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.75rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.modal-content form input,
+.modal-content form button,
+.modal-content form label {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.modal-content form button {
+  padding: 0.75rem;
+  background: #4a2c9f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.error-message {
+  color: #c00;
+  font-size: 0.9rem;
+  text-align: center;
+}
+/* Загальні стилі для модальних вікон */
+.modal {
+  display: none;                       /* сховано за замовчуванням */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);      /* напівпрозоре затемнення фону */
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Кнопка закриття */
+.modal-content .close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 1.25rem;
+  color: #666;
+  cursor: pointer;
+  transition: color .2s;
+}
+.modal-content .close-btn:hover {
+  color: #333;
+}
+
+/* Форми входу та реєстрації */
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="password"],
+.modal-content input[type="tel"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: #4a2c9f;
+  box-shadow: 0 0 0 3px rgba(74, 44, 159, 0.15);
+}
+
+/* Стиль чекбокса і лейбла */
+.modal-content label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+.modal-content input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #4a2c9f;
+}
+
+/* Кнопки відправки */
+.modal-content button[type="submit"] {
+  background: #4a2c9f;
+  color: #fff;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.modal-content button[type="submit"]:hover {
+  background: #3a2179;
+}
+
+/* Повідомлення про помилку */
+.error-message {
+  color: #c0392b;
+  font-size: 0.9rem;
+  min-height: 1.2em;
+}
+
+/* Посилання всередині модалки */
+.modal-content a {
+  color: #4a2c9f;
+  text-decoration: none;
+  transition: text-decoration .2s;
+}
+.modal-content a:hover {
+  text-decoration: underline;
+}
+
+/* Для мобільних дисплеїв */
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 1.5rem;
+    max-width: 320px;
+  }
+  .modal-content h2 {
+    font-size: 1.25rem;
+  }
+}
+/* Задаємо максимальну ширину модалок і центр */
+.modal {
+  display: none;              /* за замовчуванням ховаємо */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;           /* зменшуємо ширину */
+  max-height: 90vh;           /* щоб не виходило за екран */
+  overflow-y: auto;           /* вертикальний скрол, якщо треба */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* Стилі заголовка */
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #4a2c9f;
+  text-align: center;
+}
+
+/* Вхід/реєстрація: поля форми */
+.modal-content form input[type="text"],
+.modal-content form input[type="email"],
+.modal-content form input[type="password"],
+.modal-content form input[type="tel"] {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+/* Кнопка відправки */
+.modal-content form button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #4a2c9f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+.modal-content form button:hover {
+  background: #3b2275;
+}
+
+/* Поле з повідомленням про помилку */
+.error-message {
+  color: #c00;
+  font-size: 0.9rem;
+  min-height: 1.2em;          /* щоб не «стрибало» при з’явленні */
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Закриваючий хрестик */
+.modal-content .close-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.5rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #999;
+}
+.modal-content .close-btn:hover {
+  color: #666;
+}
+/* ================ Footer ================ */
+.site-footer {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.05);
+  padding: 16px 24px;
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #6b5ca5;
+}
+
+/* © рік і текст */
+.site-footer .copyright {
+  flex: 1 1 auto;
+}
+
+/* Список посилань */
+.site-footer .footer-links {
+  flex: 2 1 auto;
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Стиль для посилань */
+.site-footer .footer-links a {
+  position: relative;
+  color: #7b37e9;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+
+/* Анімація «підкреслення» */
+.site-footer .footer-links a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 2px;
+  background: #7b37e9;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s;
+}
+
+.site-footer .footer-links a:hover {
+  color: #5e4bb7;
+}
+
+.site-footer .footer-links a:hover::after {
+  transform: scaleX(1);
+}
+
+/* Кнопка «вгору» */
+#scroll-up {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  background: #7b37e9;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  z-index: 100;
+}
+
+#scroll-up:hover {
+  background: #5e4bb7;
+  transform: translateY(-2px);
+}

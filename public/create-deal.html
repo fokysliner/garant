@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MoneyMoo — Нова угода</title>
+  <link rel="stylesheet" href="create-deal.css">
+</head>
+<body>
+  <div class="container">
+    <ul class="stepper">
+      <li class="step active">1. Введіть умови</li>
+      <li class="step">2. Запросіть партнера</li>
+      <li class="step">3. Узгодіть угоду</li>
+    </ul>
+
+<div class="step1-only">
+    <section class="toggle-group">
+      <p>Я виступаю як</p>
+      <div class="toggle-buttons">
+        <button class="toggle-btn active" data-target="buyer">Покупець</button>
+        <button class="toggle-btn" data-target="seller">Продавець</button>
+      </div>
+    </section>
+
+    <section class="toggle-group">
+      <p>Угоду укладаю як</p>
+      <div class="toggle-buttons">
+        <button class="toggle-btn active" data-target="individual">Фізична особа</button>
+        <button class="toggle-btn" data-target="company">Компанія</button>
+      </div>
+    </section>
+</div>
+
+    <form id="deal-form" class="deal-form">
+      <div class="form-row">
+        <label for="deal-title">Найменування угоди</label>
+        <input type="text" id="deal-title" name="title" maxlength="50" placeholder="Введіть назву">
+        <small class="char-count">Залишилось 50 символів</small>
+      </div>
+<div class="form-row">
+  <label for="deal-description">Опис угоди</label>
+  <textarea id="deal-description" name="description" rows="3" maxlength="600" placeholder="Детально опишіть, що саме ви погоджуєте з партнером"></textarea>
+  <small class="desc-count">Залишилось <span id="desc-remaining">600</span> символів</small>
+</div>
+
+      <div class="form-row">
+        <label for="deal-amount">Сума угоди (UAH)</label>
+        <input type="number" id="deal-amount" name="amount" step="0.01" value="0.00">
+        <span class="commission">Комісія становитиме 0.00 UAH</span>
+      </div>
+
+      <div class="form-row">
+        <p>Хто сплачує комісію?</p>
+        <label><input type="radio" name="commissionPayer" value="me" checked> Я</label>
+        <label><input type="radio" name="commissionPayer" value="partner"> Партнер</label>
+        <label><input type="radio" name="commissionPayer" value="split"> 50/50</label>
+      </div>
+
+      <div class="form-row">
+        <label for="deal-deadline">Строк виконання</label>
+        <input type="date" id="deal-deadline" name="deadline">
+      </div>
+
+      <div class="form-actions">
+        <a href="#" class="btn cancel">× Скасувати</a>
+        <button type="button" class="btn next">Далі →</button>
+      </div>
+    </form>
+     <div id="deal-success" style="display: none;">
+    <div class="success-message">
+      <b>Вітаємо, угоду створено!</b><br>
+      Введіть email партнера або скопіюйте посилання.
+    </div>
+    <div class="deal-link-row">
+      <label>Посилання на угоду:</label>
+      <input id="deal-link" type="text" value="https://my.GrandGarant.com/contracts/ID" readonly>
+      <button id="copy-link">Скопіювати</button>
+    </div>
+    <div>
+      <label>Електронна пошта партнера:</label>
+      <input id="partner-email" type="email" placeholder="partner@email.com">
+      <button id="send-invite">Надіслати</button>
+    </div>
+    <div style="margin-top:20px;text-align:right;">
+  <button id="agree-deal-btn" class="btn next" style="background:#4e2ffa;color:#fff;">Узгодити угоду</button>
+</div>
+    <button id="back-to-deals" class="btn">← Повернутись до угод</button>
+  </div>
+  </div>
+<div id="deal-final" style="display: none;">
+  <div class="success-message" style="background:#f4f7f6;padding:20px;border-radius:8px;margin-top:24px;">
+    <h2 style="color:#267a09;">Деталі угоди</h2>
+    <table style="width:100%;margin-bottom:15px;">
+      <tr><td>Я виступаю як:</td><td id="deal-role"></td></tr>
+      <tr><td>Тип контрагента:</td><td id="deal-type"></td></tr>
+      <tr><td>Назва угоди:</td><td id="deal-title-final"></td></tr>
+      <tr><td>Сума угоди:</td><td id="deal-amount-final"></td></tr>
+      <tr><td>Комісія:</td><td id="deal-fee-final"></td></tr>
+      <tr><td>Хто сплачує комісію:</td><td id="deal-who-final"></td></tr>
+      <tr><td>Строк виконання:</td><td id="deal-deadline-final"></td></tr>
+      <tr><td>Статус угоди:</td><td id="deal-status-final" style="font-weight:600;color:#aa8800;">Очікує підтвердження партнера</td></tr>
+    </table>
+    <button id="back-to-dashboard" class="btn">← Повернутись до кабінету</button>
+  </div>
+</div>
+
+
+  <script src="create-deal.js"></script>
+</body>
+</html>

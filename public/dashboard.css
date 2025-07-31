@@ -1,0 +1,813 @@
+/* Базові скидання */
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+  color: #333;
+}
+
+/* Header */
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #6C48D4;
+}
+.dash-nav a,
+.dash-nav button {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  color: #555;
+  font-size: 0.95rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.dash-nav button:hover,
+.dash-nav a:hover {
+  color: #6C48D4;
+}
+
+/* Main контейнер */
+.dash-main {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Привітання */
+.dash-welcome {
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  color: #4a2c9f;
+}
+
+/* Секція балансу */
+.account-summary {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+}
+.account-type {
+  padding: 1rem 1.5rem;
+  border-right: 1px solid #ececec;
+  font-weight: bold;
+  cursor: pointer;
+}
+.account-balances {
+  display: flex;
+  flex: 1;
+}
+.balance-item {
+  flex: 1;
+  padding: 1rem;
+  border-right: 1px solid #ececec;
+  text-align: center;
+}
+.balance-item:last-child { border-right: none; }
+.balance-item .label {
+  font-size: 0.85rem;
+  color: #777;
+}
+.balance-item .amount {
+  margin-top: 0.25rem;
+  font-size: 1.1rem;
+  color: #6C48D4;
+  font-weight: bold;
+}
+.account-actions {
+  display: flex;
+  padding: 1rem;
+}
+.btn-outline {
+  margin-left: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid #6C48D4;
+  background: #fff;
+  color: #6C48D4;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: #6C48D4;
+  color: #fff;
+}
+
+/* Вкладки */
+.tabs {
+  display: flex;
+  background: #eef0f5;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+.tab {
+  flex: 1;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: #eef0f5;
+  border-bottom: 2px solid transparent;
+  color: #555;
+}
+.tab.active {
+  background: #fff;
+  border-bottom-color: #6C48D4;
+  color: #6C48D4;
+}
+
+/* Контент вкладок */
+.tab-content .content {
+  display: none;
+  background: #fff;
+  padding: 1.5rem;
+  border: 1px solid #ececec;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+.tab-content .content.active {
+  display: block;
+}
+
+/* Кнопки */
+.btn-primary {
+  padding: 0.6rem 1rem;
+  background: #6C48D4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-primary.mb {
+  margin-bottom: 1rem;
+}
+
+/* Фільтр угод */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.filter {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  color: #555;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.filter + .filter { margin-left: 0.5rem; }
+.filter.active {
+  background: #6C48D4;
+  color: #fff;
+  border-color: #6C48D4;
+}
+.search {
+  margin-left: auto;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Порожній стан */
+.deals-empty {
+  padding: 2rem;
+  background: #f7f7f7;
+  color: #777;
+  text-align: center;
+  border-radius: 4px;
+}
+.deal-item {
+  background: #f9f9fa;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: box-shadow 0.18s;
+  border: 1px solid transparent;
+}
+.deal-item:hover {
+  box-shadow: 0 0 6px 2px #c6b6ff50;
+}
+.deal-item.active {
+  border: 2px solid #8c5cff;
+  background: #edeaff;
+}
+.history-table { width:100%; border-collapse:collapse; margin-top:12px;}
+.history-table th, .history-table td { border:1px solid #eee; padding:7px 12px; text-align:center;}
+.history-table th { background:#f3effc;}
+.history-empty { color:#8c5cff; text-align:center; margin: 24px 0 0 0;}
+.profile-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #edeaff;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.profile-detail {
+  margin-bottom: 9px;
+  font-size: 1rem;
+  color: #333;
+}
+.profile-card .btn-outline {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.97rem;
+  border-radius: 5px;
+  border: 1px solid #8c5cff;
+  background: #f8f8ff;
+  color: #784ee9;
+  transition: all 0.16s;
+  cursor: pointer;
+}
+.profile-card .btn-outline:hover {
+  background: #8c5cff;
+  color: #fff;
+}
+/* ---- ДОДАЙ ЦЕ У КІНЕЦЬ ---- */
+
+/* Статуси угод різних кольорів */
+.deal-status.completed { background: #dbffe3; color: #22c55e; padding: 2px 8px; border-radius: 6px; }
+.deal-status.pending { background: #fff9db; color: #eab308; padding: 2px 8px; border-radius: 6px; }
+.deal-status.waiting_partner { background: #e0f2fe; color: #2563eb; padding: 2px 8px; border-radius: 6px; }
+
+/* Легка тінь для основних карток */
+.account-summary, .profile-card, .support-card {
+  box-shadow: 0 2px 12px #edeaff !important;
+}
+
+/* Плавний ефект для кнопок */
+.btn-primary, .btn-outline {
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+
+/* Адаптивність для мобільних */
+@media (max-width: 700px) {
+  .account-summary, .profile-card, .support-card, .tab-content .content {
+    padding: 9px !important;
+  }
+  .deal-item {
+    padding: 8px 6px;
+  }
+  .tabs {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+/* Стиль для повідомлення про успіх */
+#support-success {
+  color: #22c55e;
+  font-weight: 500;
+  margin: 10px 0 0 0;
+  display: none;
+}
+.account-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+  padding: 24px 28px;
+  gap: 24px;
+}
+
+.account-type {
+  font-weight: bold;
+  font-size: 1.08rem;
+  min-width: 150px;
+}
+
+.account-balances {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  gap: 44px;
+}
+
+.balance-item {
+  text-align: center;
+  min-width: 120px;
+  border-right: 1px solid #ececec;
+  padding: 0 18px;
+}
+.balance-item:last-child { border-right: none; }
+
+.balance-item .label {
+  font-size: 0.90rem;
+  color: #777;
+  margin-bottom: 3px;
+}
+.balance-item .amount {
+  margin-top: 1px;
+  font-size: 1.24rem;
+  color: #8c5cff;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.account-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.account-actions .btn-outline {
+  padding: 10px 0;
+  min-width: 110px;
+  font-weight: 600;
+  font-size: 1.03rem;
+}
+
+/* Адаптивність */
+@media (max-width: 600px) {
+  .account-summary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    padding: 13px 7px;
+  }
+  .account-balances {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .balance-item {
+    border-right: none;
+    border-bottom: 1px solid #ececec;
+    min-width: 0;
+    padding: 6px 0;
+  }
+  .balance-item:last-child { border-bottom: none; }
+  .account-actions {
+    flex-direction: row;
+    gap: 8px;
+    justify-content: stretch;
+  }
+  .account-actions .btn-outline {
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: 0.98rem;
+    padding: 9px 0;
+  }
+}
+/* --- MODAL styles --- */
+.modal {
+  position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(50, 36, 101, 0.12); z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-content {
+  background: #fff; border-radius: 16px; box-shadow: 0 8px 32px #bbb8;
+  padding: 36px 30px; min-width: 340px; max-width: 90vw; position: relative;
+  animation: popupIn .23s cubic-bezier(.7,1.9,.8,.99);
+}
+@keyframes popupIn { from {transform:scale(0.97) translateY(32px); opacity:.4;} to {transform:none; opacity:1;} }
+.close {
+  position: absolute; right: 22px; top: 18px; font-size: 2rem;
+  cursor: pointer; color: #9c9cce;
+}
+.topup-methods {
+  display: flex; flex-direction: column; gap: 26px; margin-top: 14px;
+}
+.topup-method {
+  display: flex; gap: 18px; background: #f6f5fc; border-radius: 9px;
+  padding: 18px 18px; align-items: flex-start;
+  box-shadow: 0 1px 8px #e9e6ff50;
+}
+.topup-method .topup-icon {
+  width: 40px; height: 40px; object-fit: contain; margin-right: 2px;
+}
+@media (max-width: 650px) {
+  .modal-content { padding: 18px 7px; min-width: 0; }
+  .topup-method { flex-direction: column; align-items: flex-start; }
+  .topup-method .topup-icon { margin-bottom: 8px; }
+}
+.account-actions-wide {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin: 22px 0 0 0;
+}
+.account-actions-wide .btn-outline {
+  flex: 1;
+  font-size: 1.09rem;
+  font-weight: 500;
+  padding: 0.8rem 0;
+}
+@media (max-width:600px){
+  .account-actions-wide {flex-direction:column;}
+  .account-actions-wide .btn-outline{margin-bottom:10px;}
+}
+.account-actions-wide {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin: 22px 0 0 0;
+}
+.account-actions-wide .btn-outline {
+  flex: 1;
+  font-size: 1.09rem;
+  font-weight: 500;
+  padding: 0.8rem 0;
+}
+.topup-accounts { display:flex; gap:16px; margin-top:8px;}
+.topup-account {
+  padding:7px 18px; border:1.5px solid #8c5cff; border-radius:7px; background:#f8f8ff;
+  color:#784ee9; cursor:pointer; font-size:1rem; transition:all 0.17s;
+}
+.topup-account.active,
+.topup-account:hover { background:#8c5cff; color:#fff;}
+.topup-hint {
+  font-size: 0.96em; background: #fffbe8; border-left: 5px solid #ebbe2d; border-radius: 7px;
+  padding: 10px 13px; color: #4b3c00; display: flex; align-items: flex-start;
+}
+.modal { position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(50,36,101,0.12); z-index:100; display:flex; align-items:center; justify-content:center;}
+.modal-content { background:#fff; border-radius:16px; box-shadow:0 8px 32px #bbb8; padding:36px 30px; min-width:340px; max-width:95vw; position:relative;}
+.close { position:absolute; right:22px; top:18px; font-size:2rem; cursor:pointer; color:#9c9cce;}
+.topup-methods { display:flex; flex-direction:column; gap:24px; margin-top:7px;}
+.topup-method { display:flex; gap:17px; background:#f6f5fc; border-radius:9px; padding:15px 14px; align-items:flex-start; box-shadow:0 1px 8px #e9e6ff50;}
+.topup-method .topup-icon { width:38px; height:38px; object-fit:contain; margin-top:2px;}
+@media (max-width:600px){
+  .account-actions-wide {flex-direction:column;}
+  .account-actions-wide .btn-outline{margin-bottom:10px;}
+  .modal-content { padding: 18px 7px; min-width: 0; }
+  .topup-method { flex-direction: column; align-items: flex-start; }
+  .topup-method .topup-icon { margin-bottom: 8px; }
+}
+.modal {
+  position: fixed;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(50,36,101,0.12);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Щоб не прокручувався фон під модалкою */
+  overflow: hidden;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px #bbb8;
+  padding: 36px 30px;
+  min-width: 340px;
+  max-width: 95vw;
+  position: relative;
+  /* !!! Додаємо: */
+  max-height: 85vh;
+  overflow-y: auto;
+}
+@media (max-width: 600px) {
+  .modal-content { 
+    padding: 18px 7px;
+    min-width: 0;
+    max-height: 90vh;
+  }
+}
+.modal {
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(54,39,116,0.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 28px 22px 28px;
+  box-shadow: 0 8px 42px #bbb;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 100%;
+  position: relative;
+}
+
+/* Прокрутка тільки контенту */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Кнопки вибору типу */
+.topup-type-btn {
+  padding: 7px 24px;
+  font-size: 1em;
+  border: 1px solid #8c5cff;
+  background: #fff;
+  color: #8c5cff;
+  border-radius: 7px;
+  margin-right: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: .13s;
+}
+.topup-type-btn.active,
+.topup-type-btn:active {
+  background: #8c5cff;
+  color: #fff;
+  border-color: #8c5cff;
+}
+.topup-method-block { margin-bottom: 18px;}
+.topup-method-header { font-weight:bold; font-size:1.05em; color:#7864c0; margin:10px 0 3px 0;}
+.topup-method-box {
+  background: #f5f5fc;
+  border-radius: 10px;
+  padding: 18px 16px 15px 16px;
+  margin-bottom: 6px;
+  margin-top: 2px;
+  border: 1px solid #eae8ff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(40,30,120,0.09); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal-content { background: #fff; border-radius: 12px; padding: 34px 32px 24px 32px; box-shadow: 0 2px 24px #bbb; }
+.withdraw-accounts { display: flex; gap: 12px; margin: 10px 0; }
+.withdraw-account { border: 1px solid #784ee9; background: none; color: #784ee9; border-radius: 6px; padding: 7px 22px; cursor: pointer; }
+.withdraw-account.active { background: #784ee9; color: #fff; }
+.filter-bar {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin: 18px 0 16px 0;
+  flex-wrap: wrap;
+}
+.filters {
+  display: flex;
+  gap: 8px;
+}
+.filter-btn {
+  padding: 7px 22px;
+  border: 1.5px solid #9f7aea;
+  border-radius: 7px;
+  background: #fff;
+  color: #784ee9;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border 0.14s;
+  outline: none;
+}
+.filter-btn.active, .filter-btn:focus {
+  background: #784ee9;
+  color: #fff;
+  border-color: #784ee9;
+}
+.filter-btn:hover:not(.active) {
+  background: #f4f0fa;
+  border-color: #9f7aea;
+}
+.filter-search {
+  min-width: 190px;
+  padding: 8px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 7px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.15s;
+}
+.filter-search:focus {
+  border-color: #784ee9;
+}
+@media (max-width: 700px) {
+  .filter-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .filters { gap: 4px; }
+  .filter-search { min-width: 0; width: 100%; }
+}
+.support-chat-btn {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  background: #7b37e9;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 4px 18px #bbaaee33;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: box-shadow 0.2s;
+}
+.support-chat-btn:hover {
+  box-shadow: 0 6px 28px #7b37e955;
+  background: #925bff;
+}
+.support-chat-window {
+  position: fixed;
+  right: 32px;
+  bottom: 100px;
+  width: 340px;
+  max-width: 96vw;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 40px #784ee966;
+  display: none;
+  flex-direction: column;
+  z-index: 9999;
+  overflow: hidden;
+  animation: support-pop-in 0.19s;
+}
+@keyframes support-pop-in {
+  0% { transform: translateY(60px) scale(0.93); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.support-chat-header {
+  background: #7b37e9;
+  color: #fff;
+  padding: 16px 20px 14px 20px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.support-chat-header button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.support-chat-body {
+  padding: 14px 16px;
+  min-height: 64px;
+  max-height: 230px;
+  overflow-y: auto;
+  font-size: 0.97em;
+}
+.support-chat-empty {
+  color: #a6a6b8;
+  text-align: center;
+  margin: 22px 0;
+}
+.support-chat-form {
+  display: flex;
+  gap: 6px;
+  padding: 12px 14px 14px 14px;
+  border-top: 1px solid #f3effc;
+  background: #faf9ff;
+}
+#support-chat-input {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 1em;
+  border: 1px solid #ded9f7;
+  border-radius: 6px;
+  outline: none;
+}
+.support-chat-send {
+  background: #7b37e9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0 16px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.support-chat-send:hover {
+  background: #925bff;
+}
+.support-chat-window {
+  position: fixed;
+  right: 32px;
+  bottom: 100px;
+  width: 340px;
+  max-width: 95vw;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 40px #784ee966;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  overflow: hidden;
+  animation: support-pop-in 0.19s;
+  box-sizing: border-box;
+}
+
+.support-chat-header {
+  background: #7b37e9;
+  color: #fff;
+  font-size: 1.17em;
+  font-weight: 600;
+  padding: 18px 20px 13px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.support-chat-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.35em;
+  cursor: pointer;
+  margin-left: 4px;
+  padding: 2px 8px;
+  border-radius: 7px;
+  transition: background 0.14s;
+}
+.support-chat-close:hover { background: #6332b3; }
+
+.support-chat-body {
+  padding: 14px 12px 12px 12px;
+  min-height: 56px;
+  max-height: 230px;
+  overflow-y: auto;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.support-chat-msg {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 14px 14px 3px 14px;
+  margin-bottom: 3px;
+  font-size: 1em;
+  line-height: 1.43;
+  max-width: 78%;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+.support-chat-msg-right {
+  background: #f5f1ff;
+  color: #7b37e9;
+  margin-left: auto;
+  border-radius: 14px 14px 14px 3px;
+  text-align: right;
+}
+.support-chat-msg-left {
+  background: #f3effc;
+  color: #333;
+  margin-right: auto;
+  border-radius: 14px 14px 3px 14px;
+  text-align: left;
+}
+
+.support-chat-form {
+  display: flex;
+  gap: 6px;
+  padding: 11px 14px 14px 14px;
+  border-top: 1px solid #f3effc;
+  background: #faf9ff;
+  box-sizing: border-box;
+}
+#support-chat-input {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 1em;
+  border: 1px solid #ded9f7;
+  border-radius: 6px;
+  outline: none;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.support-chat-send {
+  background: #7b37e9;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0 18px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s;
+  white-space: nowrap;
+  height: 38px;
+  margin-left: 2px;
+}
+.support-chat-send:hover {
+  background: #6332b3;
+}
+
+@media (max-width: 480px) {
+  .support-chat-window { right: 4px; bottom: 4px; width: 97vw; min-width: 0; }
+  .support-chat-header { font-size: 1em; padding: 14px 10px 11px 12px; }
+  .support-chat-form { padding: 9px 7px 10px 7px; gap: 4px; }
+  #support-chat-input { font-size: 0.99em; }
+  .support-chat-send { font-size: 0.97em; padding: 0 10px; }
+}
+.support-chat-window {
+  display: none;
+}
