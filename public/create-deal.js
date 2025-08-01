@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const description = form.elements['description'].value.trim(); 
-      const fee = parseFloat((amount * 0.01).toFixed(2));
+      const fee = parseFloat((amount * 0.10).toFixed(2));
       const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
       try {
         const resp = await fetch('/api/deals', {
@@ -164,7 +164,7 @@ function showStep3() {
   const type = document.querySelectorAll('.toggle-group')[1].querySelector('.toggle-btn.active').textContent.trim();
   const title = document.getElementById('deal-title').value;
   const amount = document.getElementById('deal-amount').value;
-  const fee = (parseFloat(amount) * 0.01).toFixed(2) + " UAH";
+  const fee = (parseFloat(amount) * 0.10).toFixed(2) + " UAH";
   const who = document.querySelector('input[name="commissionPayer"]:checked').parentNode.textContent.trim();
   const deadline = document.getElementById('deal-deadline').value;
 

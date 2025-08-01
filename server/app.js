@@ -27,7 +27,8 @@ app.use('/admin.html', basicAuth({
   challenge: true,
   realm: 'AdminPanel'
 }));
-// 
+app.use('/api/chat', require('./routes/chat'));
+
 
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
