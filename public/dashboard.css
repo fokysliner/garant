@@ -1,4 +1,3 @@
-/* Базові скидання */
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: Arial, sans-serif;
@@ -6,7 +5,6 @@ body {
   color: #333;
 }
 
-/* Header */
 .dash-header {
   display: flex;
   align-items: center;
@@ -35,21 +33,18 @@ body {
   color: #6C48D4;
 }
 
-/* Main контейнер */
 .dash-main {
   max-width: 1000px;
   margin: 2rem auto;
   padding: 0 1rem;
 }
 
-/* Привітання */
 .dash-welcome {
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
   color: #4a2c9f;
 }
 
-/* Секція балансу */
 .account-summary {
   display: flex;
   align-items: center;
@@ -104,7 +99,6 @@ body {
   color: #fff;
 }
 
-/* Вкладки */
 .tabs {
   display: flex;
   background: #eef0f5;
@@ -127,7 +121,6 @@ body {
   color: #6C48D4;
 }
 
-/* Контент вкладок */
 .tab-content .content {
   display: none;
   background: #fff;
@@ -140,7 +133,6 @@ body {
   display: block;
 }
 
-/* Кнопки */
 .btn-primary {
   padding: 0.6rem 1rem;
   background: #6C48D4;
@@ -153,7 +145,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Фільтр угод */
 .filter-bar {
   display: flex;
   align-items: center;
@@ -180,7 +171,6 @@ body {
   border-radius: 4px;
 }
 
-/* Порожній стан */
 .deals-empty {
   padding: 2rem;
   background: #f7f7f7;
@@ -234,24 +224,19 @@ body {
   background: #8c5cff;
   color: #fff;
 }
-/* ---- ДОДАЙ ЦЕ У КІНЕЦЬ ---- */
 
-/* Статуси угод різних кольорів */
 .deal-status.completed { background: #dbffe3; color: #22c55e; padding: 2px 8px; border-radius: 6px; }
 .deal-status.pending { background: #fff9db; color: #eab308; padding: 2px 8px; border-radius: 6px; }
 .deal-status.waiting_partner { background: #e0f2fe; color: #2563eb; padding: 2px 8px; border-radius: 6px; }
 
-/* Легка тінь для основних карток */
 .account-summary, .profile-card, .support-card {
   box-shadow: 0 2px 12px #edeaff !important;
 }
 
-/* Плавний ефект для кнопок */
 .btn-primary, .btn-outline {
   transition: background 0.18s, color 0.18s, box-shadow 0.18s;
 }
 
-/* Адаптивність для мобільних */
 @media (max-width: 700px) {
   .account-summary, .profile-card, .support-card, .tab-content .content {
     padding: 9px !important;
@@ -265,7 +250,6 @@ body {
   }
 }
 
-/* Стиль для повідомлення про успіх */
 #support-success {
   color: #22c55e;
   font-weight: 500;
@@ -332,7 +316,6 @@ body {
   font-size: 1.03rem;
 }
 
-/* Адаптивність */
 @media (max-width: 600px) {
   .account-summary {
     flex-direction: column;
@@ -364,7 +347,6 @@ body {
     padding: 9px 0;
   }
 }
-/* --- MODAL styles --- */
 .modal {
   position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
   background: rgba(50, 36, 101, 0.12); z-index: 100;
@@ -456,7 +438,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Щоб не прокручувався фон під модалкою */
   overflow: hidden;
 }
 .modal-content {
@@ -467,7 +448,6 @@ body {
   min-width: 340px;
   max-width: 95vw;
   position: relative;
-  /* !!! Додаємо: */
   max-height: 85vh;
   overflow-y: auto;
 }
@@ -498,12 +478,10 @@ body {
   position: relative;
 }
 
-/* Прокрутка тільки контенту */
 body.modal-open {
   overflow: hidden;
 }
 
-/* Кнопки вибору типу */
 .topup-type-btn {
   padding: 7px 24px;
   font-size: 1em;
@@ -810,4 +788,258 @@ body.modal-open {
 }
 .support-chat-window {
   display: none;
+}
+/* --- MOBILE DASHBOARD ADAPTATION --- */
+@media (max-width: 650px) {
+  body, html {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    background: #f5f2ff !important;
+  }
+  .dash-main {
+    padding: 0 2vw;
+    margin: 20px auto 0 auto;
+    max-width: 100vw;
+  }
+  .dash-welcome {
+    font-size: 1.05rem;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .account-bg {
+    border-radius: 12px;
+    min-height: unset;
+    padding: 0 !important;
+  }
+  .account-summary {
+    border-radius: 15px;
+    box-shadow: none;
+    max-width: 99vw;
+    margin: 14px auto 12px auto;
+    padding: 14px 7px 10px 7px;
+    min-width: 0;
+    width: 100%;
+  }
+  .account-type {
+    font-size: 1rem;
+    margin-bottom: 13px;
+    text-align: center;
+  }
+  .account-balances {
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+  .label,
+  .balance-amount,
+  .balance-amount.locked {
+    font-size: 1.04rem;
+    word-break: break-all;
+  }
+  .account-actions-wide {
+    gap: 8px;
+    margin-top: 5px;
+  }
+  .btn-outline, .logout-btn {
+    padding: 10px 0;
+    width: 100%;
+    font-size: 1.06rem;
+    border-radius: 10px;
+  }
+  .dash-header {
+    margin-bottom: 7px;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+    background-size: cover !important;
+    background-position: center top !important;
+  }
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 4vw 6px 4vw;
+    min-height: unset;
+  }
+  .logo {
+    font-size: 1.25rem;
+    text-align: left;
+    margin-bottom: 7px;
+  }
+  .dash-nav {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    align-items: flex-start;
+  }
+  .dash-nav a, .logout-btn {
+    font-size: 1.01rem;
+    width: 100%;
+    text-align: left;
+    padding: 7px 0;
+  }
+  .tabs {
+    flex-direction: column;
+    gap: 5px;
+    margin: 15px 0 10px 0;
+    border-radius: 10px;
+    box-shadow: none;
+    background: rgba(255,255,255,0.88);
+  }
+  .tabs .tab {
+    font-size: 1.06rem;
+    padding: 13px 0;
+    border-radius: 9px;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border-bottom: 1px solid #edeaff;
+  }
+  .tabs .tab:last-child { border-bottom: none; }
+  .tab-content {
+    padding: 8px 0;
+    border-radius: 10px;
+    box-shadow: none;
+    gap: 10px;
+  }
+  .deals-section {
+    margin: 10px auto;
+    padding: 10px 0;
+    max-width: 99vw;
+    border-radius: 11px;
+  }
+  #create-deal-btn {
+    width: 100%;
+    font-size: 1.04rem;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .filters {
+    gap: 6px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .filter-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 8px 0;
+    border-radius: 7px;
+  }
+  .filter-search {
+    min-width: 0;
+    width: 100%;
+    font-size: 1rem;
+    padding: 9px;
+    border-radius: 7px;
+  }
+  .deals-list, .history-list {
+    min-width: 0;
+    width: 100%;
+  }
+  .deals-empty {
+    font-size: 1.08rem;
+    padding: 18px 3vw;
+    text-align: center;
+  }
+  .profile-card,
+  .support-card {
+    max-width: 99vw !important;
+    padding: 6vw 2vw !important;
+    box-sizing: border-box;
+    border-radius: 10px !important;
+    margin: 14px auto !important;
+  }
+  #profile-name {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .profile-detail {
+    font-size: 0.96rem;
+    margin: 3px 0;
+  }
+  .profile-card .profile-actions {
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 10px;
+  }
+  #profile-edit-btn, #profile-password-btn {
+    width: 100%;
+    font-size: 1.02rem;
+    border-radius: 8px;
+  }
+  .support-card h2 {
+    font-size: 1.18rem;
+    margin-bottom: 10px;
+  }
+  #support-form input, #support-form textarea, #support-form select {
+    font-size: 1rem;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 6px;
+  }
+  #support-form button {
+    width: 100%;
+    font-size: 1.07rem;
+    margin: 8px 0;
+  }
+  #support-list {
+    font-size: 0.99rem;
+  }
+  .modal-content {
+    min-width: 0 !important;
+    width: 98vw !important;
+    max-width: 98vw !important;
+    padding: 14px 6px !important;
+    border-radius: 14px;
+  }
+  #deal-modal {
+    min-width: 0 !important;
+    width: 97vw !important;
+    max-width: 97vw !important;
+    padding: 10px 3vw !important;
+    border-radius: 10px;
+    left: 50%;
+    top: 12vw !important;
+    transform: translateX(-50%);
+  }
+  #deal-modal-title {
+    font-size: 1.1rem !important;
+  }
+  #deal-modal-close {
+    font-size: 1.6rem !important;
+  }
+  .topup-methods {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .topup-method {
+    padding: 12px 6px 10px 6px !important;
+    border-radius: 8px;
+  }
+  .topup-icon {
+    width: 38px !important;
+    height: 38px !important;
+    margin-bottom: 5px;
+  }
+  /* Chat support */
+  .support-chat-window {
+    right: 0;
+    left: 0;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0;
+    border-radius: 10px 10px 0 0 !important;
+    bottom: 0;
+  }
+  .support-chat-body, .support-chat-header, .support-chat-form {
+    padding-left: 4vw;
+    padding-right: 4vw;
+  }
 }
