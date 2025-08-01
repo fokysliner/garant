@@ -1,3 +1,5 @@
+const API_BASE = 'https://grandgarant.online'; 
+
 let token;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -639,31 +641,7 @@ supportChatClose.onclick = () => {
   supportChatWindow.style.display = 'none';
 };
 
-supportChatForm.onsubmit = function(e) {
-  e.preventDefault();
-  const msg = supportChatInput.value.trim();
-  if (!msg) return;
 
-  supportChatBody.innerHTML += `
-    <div style="text-align:right;margin-bottom:7px;">
-      <span style="display:inline-block; background:#edeaff; color:#784ee9; padding:7px 12px; border-radius:10px 10px 2px 12px; max-width:90%; word-break:break-word;">${escapeHtml(msg)}</span>
-    </div>
-  `;
-  supportChatInput.value = '';
-
-  setTimeout(() => {
-    supportChatBody.innerHTML += `
-      <div style="text-align:left;margin-bottom:7px;">
-        <span style="display:inline-block; background:#f4f4f8; color:#555; padding:7px 12px; border-radius:12px 10px 12px 2px; max-width:90%; word-break:break-word;">
-          Дякуємо, ваше звернення прийнято! Підтримка відповість якнайшвидше.
-        </span>
-      </div>
-    `;
-    supportChatBody.scrollTop = supportChatBody.scrollHeight;
-  }, 900);
-
-  supportChatBody.scrollTop = supportChatBody.scrollHeight;
-};
 
 function escapeHtml(text) {
   return text.replace(/[&<>"'`=\/]/g, function (s) {
@@ -673,6 +651,7 @@ function escapeHtml(text) {
     })[s];
   });
 }
+
 document.getElementById('support-chat-form').addEventListener('submit', async function(e){
   e.preventDefault();
   const input = document.getElementById('support-chat-input');
@@ -687,7 +666,7 @@ document.getElementById('support-chat-form').addEventListener('submit', async fu
     return;
   }
 
-  await fetch('/api/chat', {
+  await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type':'application/json' },
     body: JSON.stringify({ userId, userName, message, isAdmin: false })
@@ -700,7 +679,7 @@ document.getElementById('support-chat-form').addEventListener('submit', async fu
 async function loadChatHistory() {
   const userId = localStorage.getItem('userId');
   if (!userId) return;
-  const res = await fetch(`/api/chat/${userId}`);
+  const res = await fetch(`${API_BASE}/api/chat/${userId}`);
   const messages = await res.json();
   const chatBody = document.getElementById('support-chat-body');
   chatBody.innerHTML = '';
