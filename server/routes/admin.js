@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('../controllers/adminController');
-const User = require('../models/User'); // Додаємо модель для нового роута
+const User = require('../models/User'); 
 
 router.get('/deals', admin.getAllDeals);
 router.get('/users', admin.getAllUsers);
@@ -12,7 +12,6 @@ router.delete('/user/:id', admin.deleteUser);
 router.patch('/user/:id', admin.updateUser);           
 router.patch('/user/:id/balance', admin.updateUserBalance);
 
-// === НОВИЙ ОКРЕМИЙ РОУТ ДЛЯ ЗМІНИ БАЛАНСУ ===
 router.put('/user/:id/set-balance', async (req, res) => {
   try {
     const { id } = req.params;

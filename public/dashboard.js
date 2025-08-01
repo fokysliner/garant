@@ -672,3 +672,36 @@ function escapeHtml(text) {
     })[s];
   });
 }
+document.getElementById('support-chat-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const input = document.getElementById('support-chat-input');
+  const message = input.value.trim();
+  if (!message) return;
+  const userId = localStorage.getItem('userId') || getOrCreateAnonUserId(); 
+  const userName = localStorage.getItem('userName') || 'Клієнт';
+
+  await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify({ userId, userName, message, isAdmin: false })
+  });
+
+  input.value = '';
+  loadChatHistory(); 
+});
+async function loadChatHistory() {
+  const userId = localStorage.getItem('userId') || getOrCreateAnonUserId();
+  const res = await fetch(`/api/chat/${userId}`);
+  const messages = await res.json();
+  const chatBody = document.getElementById('support-chat-body');
+  chatBody.innerHTML = '';
+  messages.forEach(msg => {
+    chatBody.innerHTML += `
+      <div class="${msg.isAdmin ? 'admin-message' : 'user-message'}">
+        <b>${msg.isAdmin ? 'Адміністратор' : (msg.userName || 'Ви')}:</b> 
+        ${msg.message}
+      </div>`;
+  });
+}
+setInterval(loadChatHistory, 3000); 
+loadChatHistory();

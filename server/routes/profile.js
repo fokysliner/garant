@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const User = require('../models/User');
 
-// PATCH /api/me — оновлення профілю
 router.patch('/me', auth, async (req, res) => {
   try {
     const { firstName, lastName, city, phone, email } = req.body;
@@ -28,7 +27,6 @@ router.patch('/me', auth, async (req, res) => {
   }
 });
 
-// GET /api/me — повертає профіль з балансом
 router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);

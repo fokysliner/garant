@@ -30,15 +30,14 @@
       <tbody></tbody>
     </table>
   </main>
-<div class="admin-chats">
-  <div class="users-list" id="admin-users-list">
-  </div>
-  <div class="chat-window" id="admin-chat-window" style="display:none;">
-    <div class="chat-header" id="admin-chat-header"></div>
-    <div class="chat-body" id="admin-chat-body"></div>
-    <form id="admin-chat-form" style="display:flex;gap:8px;">
-      <input id="admin-chat-input" autocomplete="off" placeholder="Введіть повідомлення..." />
-      <button type="submit">Надіслати</button>
+<div class="admin-chat-section" style="display: flex; gap: 18px;">
+  <div id="admin-users-list" style="min-width:220px; border-right:1px solid #ece9fa; padding:12px 8px;"></div>
+  <div id="admin-chat-window" style="flex:1; display:none;">
+    <div id="admin-chat-header" style="font-weight:600; margin-bottom:10px;"></div>
+    <div id="admin-chat-body" style="height:250px;overflow-y:auto; background:#f7f5fc; border-radius:8px; margin-bottom:8px;"></div>
+    <form id="admin-chat-form" autocomplete="off" style="display:flex;gap:6px;">
+      <input type="text" id="admin-chat-input" placeholder="Введіть повідомлення..." required style="flex:1;">
+      <button type="submit" class="btn-primary">Надіслати</button>
     </form>
   </div>
 </div>

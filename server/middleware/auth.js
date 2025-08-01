@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Додати це!
+const User = require('../models/User'); 
 require('dotenv').config();
 
 module.exports = async (req, res, next) => {
@@ -10,11 +10,9 @@ module.exports = async (req, res, next) => {
   const token = header.split(' ')[1];
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    // Тепер дістаємо користувача з бази по id
     const user = await User.findById(payload.id);
     if (!user) return res.status(401).json({ success: false, message: 'Користувача не знайдено' });
 
-    // Додаємо role і email для зручності
     req.user = {
       id: user._id,
       role: user.role,

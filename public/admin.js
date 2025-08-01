@@ -1,6 +1,3 @@
-loadChatUsers();
-
-
 function formatDate(dateStr) {
   const d = new Date(dateStr);
   return d.toLocaleDateString('uk', { year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -237,35 +234,6 @@ function renderDealStatusOptions(current) {
   return statuses.map(s => `<option value="${s.key}"${s.key === current ? ' selected' : ''}>${s.label}</option>`).join('');
 }
 
-
-async function loadChats() {
-  const res = await fetch('/api/chat/all-users'); 
-  const users = await res.json();
-
-}
-router.get('/all-users', async (req, res) => {
-  const users = await ChatMessage.aggregate([
-    { $group: { _id: '$userId', userName: { $first: '$userName' } } }
-  ]);
-  res.json(users);
-});
-async function loadAdminChat(userId) {
-  const res = await fetch(`/api/chat/${userId}`);
-  const messages = await res.json();
-}
-document.getElementById('admin-chat-form').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const input = document.getElementById('admin-chat-input');
-  const message = input.value.trim();
-  if (!message) return;
-  await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type':'application/json' },
-    body: JSON.stringify({ userId: currentUserId, message, isAdmin: true })
-  });
-  input.value = '';
-  loadAdminChat(currentUserId);
-});
 let currentUserId = null;
 
 async function loadChatUsers() {
@@ -282,21 +250,27 @@ async function loadChatUsers() {
       currentUserId = div.dataset.id;
       document.getElementById('admin-chat-header').innerText = div.innerText;
       document.getElementById('admin-chat-window').style.display = 'block';
+      document.querySelectorAll('.chat-user').forEach(d => d.classList.remove('active'));
+      div.classList.add('active');
       loadAdminChat(currentUserId);
     };
   });
 }
+
 async function loadAdminChat(userId) {
-  const res = await fetch('/api/chat/' + userId);
+  const res = await fetch(`/api/chat/${userId}`);
   const messages = await res.json();
   const body = document.getElementById('admin-chat-body');
-  body.innerHTML = messages.map(msg => 
-    `<div class="${msg.isAdmin ? 'admin-message' : 'user-message'}">
-      <b>${msg.isAdmin ? 'Ви' : (msg.userName || 'Користувач')}:</b> ${msg.message}
-    </div>`
-  ).join('');
+  body.innerHTML = messages.length
+    ? messages.map(msg => 
+        `<div class="${msg.isAdmin ? 'admin-message' : 'user-message'}">
+          <b>${msg.isAdmin ? 'Ви' : (msg.userName || 'Користувач')}:</b> ${msg.message}
+        </div>`
+      ).join('')
+    : '<div style="color:#aaa;text-align:center;margin:16px 0;">Немає повідомлень</div>';
   body.scrollTop = body.scrollHeight;
 }
+
 document.getElementById('admin-chat-form').onsubmit = async e => {
   e.preventDefault();
   const input = document.getElementById('admin-chat-input');
@@ -310,3 +284,6 @@ document.getElementById('admin-chat-form').onsubmit = async e => {
   input.value = '';
   loadAdminChat(currentUserId);
 };
+
+loadChatUsers();
+setInterval(() => { if (currentUserId) loadAdminChat(currentUserId); }, 3000);

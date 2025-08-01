@@ -7,7 +7,6 @@ exports.createDeal = async (req, res) => {
     }
     const userId = req.user.id;
 
-    // Додаємо description в деструктуризацію!
     const { role, type, title, amount, fee, commissionPayer, deadline, description } = req.body;
 
     if (!role || !type || !title || !amount || !fee || !commissionPayer || !deadline) {
@@ -23,7 +22,7 @@ exports.createDeal = async (req, res) => {
       fee,
       commissionPayer,
       deadline,
-      description // <-- Додаємо опис
+      description 
     });
 
     await deal.save();
