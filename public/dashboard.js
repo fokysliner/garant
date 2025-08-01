@@ -22,7 +22,8 @@ fetch('/api/me', {
 
     document.getElementById('user-name').textContent = `${user.firstName} ${user.lastName}`;
 
-  
+    localStorage.setItem('userId', user._id); 
+
     const balance = user.balance || 0;
     const locked = user.lockedBalance || 0; 
     document.getElementById('balance-available').innerHTML = `${balance.toFixed(2)} <span class="uah">UAH</span>`;
@@ -33,7 +34,7 @@ fetch('/api/me', {
   });
 
 
-  // --- Створити угоду ---
+
   const createDealBtn = document.getElementById('create-deal-btn');
   if (createDealBtn) {
     createDealBtn.addEventListener('click', () => {
@@ -677,8 +678,14 @@ document.getElementById('support-chat-form').addEventListener('submit', async fu
   const input = document.getElementById('support-chat-input');
   const message = input.value.trim();
   if (!message) return;
-  const userId = localStorage.getItem('userId') || getOrCreateAnonUserId(); 
+
+  const userId = localStorage.getItem('userId');
   const userName = localStorage.getItem('userName') || 'Клієнт';
+
+  if (!userId) {
+    alert('Помилка: Не визначено userId.');
+    return;
+  }
 
   await fetch('/api/chat', {
     method: 'POST',
@@ -689,8 +696,10 @@ document.getElementById('support-chat-form').addEventListener('submit', async fu
   input.value = '';
   loadChatHistory(); 
 });
+
 async function loadChatHistory() {
-  const userId = localStorage.getItem('userId') || getOrCreateAnonUserId();
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
   const res = await fetch(`/api/chat/${userId}`);
   const messages = await res.json();
   const chatBody = document.getElementById('support-chat-body');
