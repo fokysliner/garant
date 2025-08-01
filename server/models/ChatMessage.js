@@ -5,6 +5,7 @@ const ChatMessageSchema = new mongoose.Schema({
   userName: String, 
   isAdmin: { type: Boolean, default: false }, 
   message: String,
+  readByAdmin: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

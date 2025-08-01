@@ -159,3 +159,7 @@ body {
   background: #d7caff !important;
   font-weight: 600;
 }
+.chat-user-item.has-unread {
+  background: #ffe2e2;
+  font-weight: 600;
+}
