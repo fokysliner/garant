@@ -234,56 +234,58 @@ function renderDealStatusOptions(current) {
   return statuses.map(s => `<option value="${s.key}"${s.key === current ? ' selected' : ''}>${s.label}</option>`).join('');
 }
 
-let currentUserId = null;
+let currentChatUserId = null;
 
-async function loadChatUsers() {
+async function loadSupportChatUsers() {
   const res = await fetch('/api/chat/all-users');
   const users = await res.json();
-  const list = document.getElementById('admin-users-list');
-  list.innerHTML = users.map(u => 
-    `<div class="chat-user" data-id="${u._id}">
+  const list = document.getElementById('admin-chat-users-list');
+  list.innerHTML = users.length ? users.map(u => `
+    <div class="chat-user-item" data-id="${u._id}" style="cursor:pointer; padding:8px 10px; border-radius:6px; margin-bottom:4px; background:#f7f5fc;">
       <b>${u.userName || u._id}</b>
-    </div>`
-  ).join('');
-  document.querySelectorAll('.chat-user').forEach(div => {
+    </div>
+  `).join('') : '<div style="color:#aaa; text-align:center;">Поки що немає чатів</div>';
+
+  document.querySelectorAll('.chat-user-item').forEach(div => {
     div.onclick = () => {
-      currentUserId = div.dataset.id;
-      document.getElementById('admin-chat-header').innerText = div.innerText;
-      document.getElementById('admin-chat-window').style.display = 'block';
-      document.querySelectorAll('.chat-user').forEach(d => d.classList.remove('active'));
+      document.querySelectorAll('.chat-user-item').forEach(x => x.classList.remove('active'));
       div.classList.add('active');
-      loadAdminChat(currentUserId);
+      currentChatUserId = div.dataset.id;
+      document.getElementById('admin-support-chat-header').innerText = div.innerText;
+      loadSupportChatHistory(currentChatUserId);
     };
   });
 }
 
-async function loadAdminChat(userId) {
+async function loadSupportChatHistory(userId) {
   const res = await fetch(`/api/chat/${userId}`);
   const messages = await res.json();
-  const body = document.getElementById('admin-chat-body');
-  body.innerHTML = messages.length
-    ? messages.map(msg => 
-        `<div class="${msg.isAdmin ? 'admin-message' : 'user-message'}">
+  const chatBody = document.getElementById('admin-support-chat-body');
+  chatBody.innerHTML = messages.length
+    ? messages.map(msg => `
+        <div class="${msg.isAdmin ? 'admin-message' : 'user-message'}" style="margin-bottom:7px;">
           <b>${msg.isAdmin ? 'Ви' : (msg.userName || 'Користувач')}:</b> ${msg.message}
-        </div>`
-      ).join('')
+        </div>
+      `).join('')
     : '<div style="color:#aaa;text-align:center;margin:16px 0;">Немає повідомлень</div>';
-  body.scrollTop = body.scrollHeight;
+  chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-document.getElementById('admin-chat-form').onsubmit = async e => {
+document.getElementById('admin-support-chat-form').onsubmit = async function(e) {
   e.preventDefault();
-  const input = document.getElementById('admin-chat-input');
+  const input = document.getElementById('admin-support-chat-input');
   const msg = input.value.trim();
-  if (!msg || !currentUserId) return;
+  if (!msg || !currentChatUserId) return;
   await fetch('/api/chat', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ userId: currentUserId, userName: 'Адмін', message: msg, isAdmin: true })
+    body: JSON.stringify({ userId: currentChatUserId, userName: 'Адмін', message: msg, isAdmin: true })
   });
   input.value = '';
-  loadAdminChat(currentUserId);
+  loadSupportChatHistory(currentChatUserId);
 };
 
-loadChatUsers();
-setInterval(() => { if (currentUserId) loadAdminChat(currentUserId); }, 3000);
+loadSupportChatUsers();
+setInterval(() => { 
+  if (currentChatUserId) loadSupportChatHistory(currentChatUserId); 
+}, 3000);
