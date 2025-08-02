@@ -563,3 +563,44 @@ body {
   }
   #deal-final table { font-size: 1.01rem; }
 }
+@media (max-width: 600px) {
+  .container {
+    max-width: 99vw;
+    width: 100%;
+    padding: 8px 1vw 10px 1vw;
+    border-radius: 13px;
+    box-shadow: 0 2px 15px rgba(123,55,233,0.10);
+    font-size: 0.94rem;
+    margin-top: 10px;
+    transform: scale(0.94);
+    overflow-x: hidden;
+  }
+  .deal-form input,
+  .deal-form textarea {
+    font-size: 0.97rem;
+    padding: 0.42em 0.5em;
+  }
+  .stepper {
+    font-size: 0.97rem;
+    margin-bottom: 18px;
+  }
+  .step {
+    font-size: 1rem;
+    padding: 0.3rem;
+  }
+  .toggle-btn {
+    padding: 0.38em 0.7em;
+    font-size: 0.98rem;
+  }
+  .deal-form label {
+    font-size: 0.98rem;
+  }
+  .deal-form .form-row {
+    margin-bottom: 13px;
+  }
+}
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
+}

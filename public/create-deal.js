@@ -96,12 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ role, type, title, amount, fee, commissionPayer, deadline, description  })
         });
         const json = await resp.json();
-        if (json.success) {
-          setStep(2);
-          document.querySelectorAll('.step').forEach((el, i) => {
-            el.classList.toggle('active', i === 1);
-          });
-        } else {
+if (json.success && json.dealId) {
+  setStep(2);
+  document.querySelectorAll('.step').forEach((el, i) => {
+    el.classList.toggle('active', i === 1);
+  });
+
+  const linkInput = document.getElementById('deal-link');
+  if (linkInput) {
+    linkInput.value = `https://my.GrandGarant.com/contracts/${json.dealId}`;
+  }
+}
+
+        else {
           errBlock.innerHTML = json.message || 'Помилка при створенні угоди';
         }
       } catch (err) {
