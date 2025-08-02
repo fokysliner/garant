@@ -95,8 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           body: JSON.stringify({ role, type, title, amount, fee, commissionPayer, deadline, description  })
         });
-        const json = await resp.json();
-if (json.success && json.dealId) {
+const json = await resp.json();
+if (json.success && json.deal && json.deal._id) {
   setStep(2);
   document.querySelectorAll('.step').forEach((el, i) => {
     el.classList.toggle('active', i === 1);
@@ -104,13 +104,13 @@ if (json.success && json.dealId) {
 
   const linkInput = document.getElementById('deal-link');
   if (linkInput) {
-    linkInput.value = `https://my.GrandGarant.com/contracts/${json.dealId}`;
+    linkInput.value = `https://my.GrandGarant.com/contracts/${json.deal._id}`;
   }
 }
+else {
+  errBlock.innerHTML = json.message || 'Помилка при створенні угоди';
+}
 
-        else {
-          errBlock.innerHTML = json.message || 'Помилка при створенні угоди';
-        }
       } catch (err) {
         errBlock.innerHTML = 'Помилка з’єднання із сервером';
       }
