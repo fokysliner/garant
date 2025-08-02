@@ -25,6 +25,9 @@ fetch('/api/me', {
     document.getElementById('user-name').textContent = `${user.firstName} ${user.lastName}`;
 
     localStorage.setItem('userId', user._id); 
+    console.log('USER ID set in localStorage:', user._id);
+    localStorage.setItem('chatId', user._id);  
+
 
     const balance = user.balance || 0;
     const locked = user.lockedBalance || 0; 
@@ -666,20 +669,22 @@ document.getElementById('support-chat-form').addEventListener('submit', async fu
     return;
   }
 
-  await fetch(`${API_BASE}/api/chat`, {
-    method: 'POST',
-    headers: { 'Content-Type':'application/json' },
-    body: JSON.stringify({ userId, userName, message, isAdmin: false })
-  });
+const chatId = localStorage.getItem('chatId');
+await fetch(`${API_BASE}/api/chat`, {
+  method: 'POST',
+  headers: { 'Content-Type':'application/json' },
+  body: JSON.stringify({ chatId, userId, userName, message, isAdmin: false }) 
+});
+
 
   input.value = '';
   loadChatHistory(); 
 });
 
 async function loadChatHistory() {
-  const userId = localStorage.getItem('userId');
-  if (!userId) return;
-  const res = await fetch(`${API_BASE}/api/chat/${userId}`);
+  const chatId = localStorage.getItem('chatId'); 
+  if (!chatId) return; 
+  const res = await fetch(`${API_BASE}/api/chat/${chatId}`);
   const messages = await res.json();
   const chatBody = document.getElementById('support-chat-body');
   chatBody.innerHTML = '';
@@ -691,5 +696,6 @@ async function loadChatHistory() {
       </div>`;
   });
 }
+
 setInterval(loadChatHistory, 3000); 
 loadChatHistory();

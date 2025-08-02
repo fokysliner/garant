@@ -234,7 +234,7 @@ function renderDealStatusOptions(current) {
   return statuses.map(s => `<option value="${s.key}"${s.key === current ? ' selected' : ''}>${s.label}</option>`).join('');
 }
 
-let currentChatUserId = null;
+let currentChatId = null;
 
 async function loadSupportChatUsers() {
   const res = await fetch('/api/chat/all-users');
@@ -242,7 +242,7 @@ async function loadSupportChatUsers() {
   console.log('Admin chat users:', users);
   const list = document.getElementById('admin-chat-users-list');
   list.innerHTML = users.length ? users.map(u => `
-    <div class="chat-user-item" data-id="${u._id}" style="cursor:pointer; padding:8px 10px; border-radius:6px; margin-bottom:4px; background:#f7f5fc;">
+    <div class="chat-user-item" data-chat-id="${u._id}" style="cursor:pointer; padding:8px 10px; border-radius:6px; margin-bottom:4px; background:#f7f5fc;">
       <b>${u.userName || u._id}</b>
     </div>
   `).join('') : '<div style="color:#aaa; text-align:center;">Поки що немає чатів</div>';
@@ -251,16 +251,17 @@ async function loadSupportChatUsers() {
     div.onclick = () => {
       document.querySelectorAll('.chat-user-item').forEach(x => x.classList.remove('active'));
       div.classList.add('active');
-      currentChatUserId = div.dataset.id;
-      console.log('Admin open chat for userId:', currentChatUserId);
+      currentChatId = div.dataset.chatId;
+      console.log('Admin open chat for chatId:', currentChatId);
       document.getElementById('admin-support-chat-header').innerText = div.innerText;
-      loadSupportChatHistory(currentChatUserId);
+    loadSupportChatHistory(currentChatId); 
     };
   });
 }
 
-async function loadSupportChatHistory(userId) {
-  const res = await fetch(`/api/chat/${userId}`);
+async function loadSupportChatHistory(chatId) {
+  console.log('Loading chat history for:', chatId);
+  const res = await fetch(`/api/chat/${chatId}`);
   const messages = await res.json();
   const chatBody = document.getElementById('admin-support-chat-body');
   chatBody.innerHTML = messages.length
@@ -277,17 +278,19 @@ document.getElementById('admin-support-chat-form').onsubmit = async function(e) 
   e.preventDefault();
   const input = document.getElementById('admin-support-chat-input');
   const msg = input.value.trim();
-  if (!msg || !currentChatUserId) return;
+  if (!msg || !currentChatId) return;
   await fetch('/api/chat', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ userId: currentChatUserId, userName: 'Адмін', message: msg, isAdmin: true })
+    body: JSON.stringify({ chatId: currentChatId, userId: currentChatId, userName: 'Адмін', message: msg, isAdmin: true })
   });
+
   input.value = '';
-  loadSupportChatHistory(currentChatUserId);
+  loadSupportChatHistory(currentChatId); 
 };
+
 
 loadSupportChatUsers();
 setInterval(() => { 
-  if (currentChatUserId) loadSupportChatHistory(currentChatUserId); 
+  if (currentChatId) loadSupportChatHistory(currentChatId); 
 }, 3000);

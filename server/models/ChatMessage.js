@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const ChatMessageSchema = new mongoose.Schema({
+  chatId: String,  
   userId: String, 
   userName: String, 
   isAdmin: { type: Boolean, default: false }, 
