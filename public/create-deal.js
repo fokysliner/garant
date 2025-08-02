@@ -105,6 +105,7 @@ if (json.success && json.deal && json.deal._id) {
   const linkInput = document.getElementById('deal-link');
   if (linkInput) {
 linkInput.value = `https://grandgarant.online/contracts/${json.deal._id}`;
+
   }
 }
 else {
