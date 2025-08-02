@@ -1,8 +1,18 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const dealId = window.location.pathname.split('/').pop();
-  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
-  // 1. Отримати угоду по ID
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const dealId = params.get('dealId');
+  if (!dealId) {
+    document.getElementById('deal-details').innerHTML = '<b style="color:red;">Угоду не знайдено!</b>';
+    return;
+  }
+
+  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+  if (!token) {
+    window.location.href = '/login.html?returnUrl=' + encodeURIComponent(window.location.href);
+    return;
+  }
+
   fetch(`/api/deals/${dealId}`, {
     headers: { 'Authorization': `Bearer ${token}` }
   })
@@ -18,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('deal-deadline').textContent = (new Date(deal.deadline)).toLocaleDateString('uk');
     });
 
-  // 2. Прийняти
   document.getElementById('accept-deal-btn').onclick = () => {
     fetch(`/api/deals/${dealId}/accept`, {
       method: 'POST',
@@ -32,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   };
 
-  // 3. Відхилити
   document.getElementById('decline-deal-btn').onclick = () => {
     fetch(`/api/deals/${dealId}/decline`, {
       method: 'POST',
