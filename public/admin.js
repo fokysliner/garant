@@ -239,6 +239,7 @@ let currentChatUserId = null;
 async function loadSupportChatUsers() {
   const res = await fetch('/api/chat/all-users');
   const users = await res.json();
+  console.log('Admin chat users:', users);
   const list = document.getElementById('admin-chat-users-list');
   list.innerHTML = users.length ? users.map(u => `
     <div class="chat-user-item" data-id="${u._id}" style="cursor:pointer; padding:8px 10px; border-radius:6px; margin-bottom:4px; background:#f7f5fc;">
@@ -251,6 +252,7 @@ async function loadSupportChatUsers() {
       document.querySelectorAll('.chat-user-item').forEach(x => x.classList.remove('active'));
       div.classList.add('active');
       currentChatUserId = div.dataset.id;
+      console.log('Admin open chat for userId:', currentChatUserId);
       document.getElementById('admin-support-chat-header').innerText = div.innerText;
       loadSupportChatHistory(currentChatUserId);
     };
