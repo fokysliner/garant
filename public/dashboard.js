@@ -639,3 +639,96 @@ if (activeFilter === 'active') {
   renderDeals(filtered);
 }
 
+// ==== CHAT SUPPORT LOGIC ====
+
+// Додаємо унікальний chatId у localStorage (одноразово при першому заході)
+function getOrCreateChatId() {
+  let chatId = localStorage.getItem('chatId');
+  if (!chatId) {
+    // або генеруй тут рандомно, або використовуй userId з профілю, якщо він унікальний
+    chatId = 'chat_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('chatId', chatId);
+  }
+  return chatId;
+}
+
+// 1. Відкриття чату — показати привітання, завантажити історію
+const supportChatBtn    = document.getElementById('support-chat-btn');
+const supportChatWindow = document.getElementById('support-chat-window');
+const supportChatClose  = document.getElementById('support-chat-close');
+const supportChatForm   = document.getElementById('support-chat-form');
+const supportChatInput  = document.getElementById('support-chat-input');
+const supportChatBody   = document.getElementById('support-chat-body');
+const chatId            = getOrCreateChatId();
+
+supportChatBtn.onclick = () => {
+  supportChatWindow.style.display = 'flex';
+  setTimeout(() => supportChatInput.focus(), 300);
+  loadChatHistory();
+};
+supportChatClose.onclick = () => {
+  supportChatWindow.style.display = 'none';
+};
+
+// 2. Відправлення повідомлення
+supportChatForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const msg = supportChatInput.value.trim();
+  if (!msg) return;
+  const userId   = localStorage.getItem('userId');
+  const userName = localStorage.getItem('userName') || 'Клієнт';
+  if (!userId || !chatId) return alert('Не визначено userId або chatId.');
+
+  await fetch(`${API_BASE}/api/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ chatId, userId, userName, message: msg, isAdmin: false })
+  });
+  supportChatInput.value = '';
+  loadChatHistory();
+});
+
+// 3. Завантаження історії
+async function loadChatHistory() {
+  const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  let messages = [];
+  try {
+    messages = await res.json();
+  } catch { messages = []; }
+
+  // Відфільтрувати лише за останні 24 години
+  const now = Date.now();
+  messages = messages.filter(m => (now - new Date(m.timestamp).getTime()) < 24 * 60 * 60 * 1000);
+
+  supportChatBody.innerHTML = '';
+  if (messages.length === 0) {
+    supportChatBody.innerHTML = `<div class="support-chat-empty">Напишіть нам, ми відповімо впродовж декількох хвилин.</div>
+    <div style="font-size:12px;color:#aaa;">Код вашого чату: <b>${chatId}</b></div>`;
+    return;
+  }
+  messages.forEach(m => {
+    supportChatBody.innerHTML += `
+      <div class="${m.isAdmin ? 'admin-message' : 'user-message'}">
+        <b>${m.isAdmin ? 'Адміністратор' : (m.userName || 'Ви')}:</b> ${escapeHtml(m.message)}
+      </div>`;
+  });
+  supportChatBody.innerHTML += `<div style="font-size:12px;color:#aaa;text-align:right;">Код чату: <b>${chatId}</b></div>`;
+}
+// Автооновлення історії
+setInterval(loadChatHistory, 3500);
+
+// Екранування HTML
+function escapeHtml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}

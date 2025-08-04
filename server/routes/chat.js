@@ -1,67 +1,22 @@
-
 const express = require('express');
 const router = express.Router();
-const ChatMessage = require('../models/ChatMessage');
-const User = require('../models/User');
-
-
-router.get('/all-users', async (req, res) => {
-  const users = await User.find({}, { _id: 1, firstName: 1, lastName: 1, email: 1 });
-  const unread = await ChatMessage.aggregate([
-    { $match: { isAdmin: false, readByAdmin: { $ne: true } } },
-    { $group: { _id: '$userId', count: { $sum: 1 } } }
-  ]);
-  const unreadMap = {};
-  unread.forEach(u => unreadMap[u._id?.toString()] = u.count);
-
-  const result = users.map(u => ({
-    _id: u._id,
-    userName: `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.email,
-    email: u.email,
-    unreadCount: unreadMap[u._id?.toString()] || 0
-  }));
-
-  res.json(result);
-});
-
-
-router.get('/:chatId', async (req, res) => {
-  const { chatId } = req.params;
-  if (!chatId) {
-    return res.status(400).json({ success: false, error: 'Missing chatId' });
-  }
-
-  const messages = await ChatMessage.find({ chatId }).sort('createdAt');
-
-  await ChatMessage.updateMany(
-    { chatId, isAdmin: false, readByAdmin: { $ne: true } },
-    { $set: { readByAdmin: true } }
-  );
-
-  res.json(messages);
-});
-
-
+const ChatMessage = require('../models/ChatMessage'); // Модель з Mongoose
 
 router.post('/', async (req, res) => {
   const { chatId, userId, userName, message, isAdmin } = req.body;
+  if (!chatId || !userId || !message) return res.status(400).json({ success: false });
 
-  if (!chatId) {
-    return res.status(400).json({ success: false, error: 'Missing chatId' });
-  }
-
-  const chatMsg = new ChatMessage({
-    chatId,
-    userId,
-    userName,
-    message,
-    isAdmin,
-    readByAdmin: isAdmin
+  await ChatMessage.create({
+    chatId, userId, userName, message, isAdmin: !!isAdmin, timestamp: new Date()
   });
-
-  await chatMsg.save();
   res.json({ success: true });
 });
 
+router.get('/:chatId', async (req, res) => {
+  const { chatId } = req.params;
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const messages = await ChatMessage.find({ chatId, timestamp: { $gte: since } }).sort('timestamp').lean();
+  res.json(messages);
+});
 
 module.exports = router;

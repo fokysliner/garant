@@ -8,6 +8,7 @@ const dealsRoutes= require('./routes/deals');
 const historyRoutes = require('./routes/history');
 const profileRoutes = require('./routes/profile');
 const supportRoutes = require('./routes/support');
+const chatRouter = require('./routes/chat');
 
 require('dotenv').config();
 
@@ -21,6 +22,7 @@ app.use('/api', historyRoutes);
 app.use('/api', profileRoutes);
 app.use('/api', supportRoutes);
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/chat', chatRouter);
 
 app.use('/admin.html', basicAuth({
   users: { 'admin': 'mypassword' },  
