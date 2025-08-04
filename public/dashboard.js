@@ -27,8 +27,6 @@ fetch('/api/me', {
     localStorage.setItem('userId', user._id); 
     console.log('USER ID set in localStorage:', user._id);
     localStorage.setItem('chatId', user._id);  
-    localStorage.setItem('userName', `${user.firstName} ${user.lastName}`);
-
 loadChatHistory();
 setInterval(loadChatHistory, 3000);
 
@@ -41,57 +39,7 @@ setInterval(loadChatHistory, 3000);
     console.error('Error fetching user data:', error);
   });
 
-  const supportChatBtn    = document.getElementById('support-chat-btn');
-  const supportChatWindow = document.getElementById('support-chat-window');
-  const supportChatClose  = document.getElementById('support-chat-close');
-  const supportChatForm   = document.getElementById('support-chat-form');
-  const supportChatInput  = document.getElementById('support-chat-input');
-  const supportChatBody   = document.getElementById('support-chat-body');
 
-  supportChatBtn.onclick = () => {
-    supportChatWindow.style.display = 'flex';
-    setTimeout(() => supportChatInput.focus(), 300);
-  };
-  supportChatClose.onclick = () => {
-    supportChatWindow.style.display = 'none';
-  };
-
-  supportChatForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    const msg      = supportChatInput.value.trim();
-    if (!msg) return;
-    const userId   = localStorage.getItem('userId');
-    const userName = localStorage.getItem('userName') || 'Клієнт';
-    const chatId   = localStorage.getItem('chatId');
-    if (!userId || !chatId) return alert('Не визначено userId або chatId.');
-
-    await fetch(`${API_BASE}/api/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ chatId, userId, userName, message: msg, isAdmin: false })
-    });
-    supportChatInput.value = '';
-    loadChatHistory();
-  });
-
-  async function loadChatHistory() {
-    const chatId = localStorage.getItem('chatId');
-    if (!chatId) return;
-    const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const messages = await res.json();
-    supportChatBody.innerHTML = '';
-    messages.forEach(m => {
-      supportChatBody.innerHTML += `
-        <div class="${m.isAdmin ? 'admin-message' : 'user-message'}">
-          <b>${m.isAdmin ? 'Адміністратор' : (m.userName || 'Ви')}:</b> ${m.message}
-        </div>`;
-    });
-  }
 
   const createDealBtn = document.getElementById('create-deal-btn');
   if (createDealBtn) {
@@ -681,3 +629,76 @@ if (activeFilter === 'active') {
 
   renderDeals(filtered);
 }
+// --- Чат підтримки (коректна версія) ---
+
+const supportChatBtn    = document.getElementById('support-chat-btn');
+const supportChatWindow = document.getElementById('support-chat-window');
+const supportChatClose  = document.getElementById('support-chat-close');
+const supportChatForm   = document.getElementById('support-chat-form');
+const supportChatInput  = document.getElementById('support-chat-input');
+const supportChatBody   = document.getElementById('support-chat-body');
+
+// Відкрити чат
+supportChatBtn.onclick = () => {
+  supportChatWindow.style.display = 'flex';
+  setTimeout(() => supportChatInput.focus(), 300);
+};
+// Закрити чат
+supportChatClose.onclick = () => {
+  supportChatWindow.style.display = 'none';
+};
+
+// Надсилання повідомлення
+supportChatForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const msg      = supportChatInput.value.trim();
+  if (!msg) return;
+  const userId   = localStorage.getItem('userId');
+  const userName = localStorage.getItem('userName') || 'Клієнт';
+  const chatId   = localStorage.getItem('chatId');
+  if (!userId || !chatId) return alert('Не визначено userId або chatId.');
+
+  await fetch(`${API_BASE}/api/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ chatId, userId, userName, message: msg, isAdmin: false })
+  });
+  supportChatInput.value = '';
+  loadChatHistory();
+});
+
+// Завантаження історії чату
+async function loadChatHistory() {
+  const chatId = localStorage.getItem('chatId');
+  if (!chatId) return;
+  const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  const messages = await res.json();
+  supportChatBody.innerHTML = '';
+  messages.forEach(m => {
+    supportChatBody.innerHTML += `
+      <div class="${m.isAdmin ? 'admin-message' : 'user-message'}">
+        <b>${m.isAdmin ? 'Адміністратор' : (m.userName || 'Ви')}:</b> ${m.message}
+      </div>`;
+  });
+}
+
+// --- ЄДИНЕ МІСЦЕ, де треба ставити userName ---
+fetch('/api/me', {
+  headers: { 'Authorization': `Bearer ${token}` }
+})
+  .then(r => r.json())
+  .then(user => {
+    if (!user || !user.firstName) return;
+
+    document.getElementById('user-name').textContent = `${user.firstName} ${user.lastName}`;
+    localStorage.setItem('userId', user._id);
+    localStorage.setItem('userName', `${user.firstName} ${user.lastName}`); // Додаєш userName!
+    localStorage.setItem('chatId', user._id);
+    loadChatHistory();
+    setInterval(loadChatHistory, 3000);
+  });
