@@ -107,32 +107,32 @@ function openUserModal(user) {
     document.getElementById('balance-edit-row').style.display = 'none';
   };
 
-document.getElementById('save-balance-btn').onclick = function() {
-  const val = parseFloat(document.getElementById('new-balance-input').value.replace(',', '.'));
-  if (isNaN(val) || val < 0) {
-    document.getElementById('new-balance-input').style.border = '1.5px solid #e24343';
-    setTimeout(() => document.getElementById('new-balance-input').style.border = '', 1400);
-    return;
-  }
-  fetch(`/api/admin/user/${user._id}/set-balance`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ newBalance: val })
-  })
-  .then(r => r.json())
-  .then(resp => {
-    if (resp.success) {
-      user.balance = val;
-      document.getElementById('user-balance').textContent = val.toFixed(2) + " UAH";
-      document.getElementById('balance-edit-row').style.display = 'none';
-    } else {
-      alert('Помилка при збереженні балансу');
+  document.getElementById('save-balance-btn').onclick = function() {
+    const val = parseFloat(document.getElementById('new-balance-input').value.replace(',', '.'));
+    if (isNaN(val) || val < 0) {
+      document.getElementById('new-balance-input').style.border = '1.5px solid #e24343';
+      setTimeout(() => document.getElementById('new-balance-input').style.border = '', 1400);
+      return;
     }
-  })
-  .catch(() => {
-    alert('Помилка при збереженні балансу');
-  });
-};
+    fetch(`/api/admin/user/${user._id}/set-balance`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newBalance: val })
+    })
+    .then(r => r.json())
+    .then(resp => {
+      if (resp.success) {
+        user.balance = val;
+        document.getElementById('user-balance').textContent = val.toFixed(2) + " UAH";
+        document.getElementById('balance-edit-row').style.display = 'none';
+      } else {
+        alert('Помилка при збереженні балансу');
+      }
+    })
+    .catch(() => {
+      alert('Помилка при збереженні балансу');
+    });
+  };
 
   document.getElementById('edit-user-form').onsubmit = function(e) {
     e.preventDefault();
@@ -160,7 +160,7 @@ document.getElementById('save-balance-btn').onclick = function() {
 
   const dealsTab = document.getElementById('deals-tab');
   dealsTab.innerHTML = `<div style="color:#7b37e9; margin-top:24px;">Завантаження угод...</div>`;
-fetch('/api/admin/deals')
+  fetch('/api/admin/deals')
     .then(r => r.json())
     .then(data => {
       const deals = data.deals || [];
@@ -220,7 +220,6 @@ fetch('/api/admin/deals')
   });
 }
 
-
 function renderDealStatusOptions(current) {
   const statuses = [
     { key: 'pending', label: 'Очікує підтвердження адміністрації' },
@@ -237,37 +236,44 @@ function renderDealStatusOptions(current) {
 let currentChatId = null;
 
 async function loadSupportChatUsers() {
-  const res = await fetch('/api/chat/all-users');
-  const users = await res.json();
-  console.log('Admin chat users:', users);
+  const res = await fetch('/api/chat');
+  const data = await res.json();
+  const chats = data.chats || [];
   const list = document.getElementById('admin-chat-users-list');
-  list.innerHTML = users.length ? users.map(u => `
-    <div class="chat-user-item" data-chat-id="${u._id}" style="cursor:pointer; padding:8px 10px; border-radius:6px; margin-bottom:4px; background:#f7f5fc;">
-      <b>${u.userName || u._id}</b>
-    </div>
-  `).join('') : '<div style="color:#aaa; text-align:center;">Поки що немає чатів</div>';
+  list.innerHTML = chats.length
+    ? chats.map(u => `
+      <div class="chat-user-item" data-chat-id="${u._id}" style="cursor:pointer; padding:8px 10px; border-radius:6px; margin-bottom:4px; background:#f7f5fc;">
+        <b>${u.lastUserName || u._id}</b>
+        <div style="font-size:12px;color:#888">ID: <b>${u._id}</b></div>
+        <div style="font-size:13px;">${escapeHtml(u.lastMessage || "")}</div>
+        <div style="font-size:11px;color:#aaa">${u.lastTime ? new Date(u.lastTime).toLocaleString('uk') : ''}</div>
+      </div>
+    `).join('')
+    : '<div style="color:#aaa; text-align:center;">Поки що немає чатів</div>';
 
   document.querySelectorAll('.chat-user-item').forEach(div => {
     div.onclick = () => {
       document.querySelectorAll('.chat-user-item').forEach(x => x.classList.remove('active'));
       div.classList.add('active');
       currentChatId = div.dataset.chatId;
-      console.log('Admin open chat for chatId:', currentChatId);
-      document.getElementById('admin-support-chat-header').innerText = div.innerText;
-    loadSupportChatHistory(currentChatId); 
+      document.getElementById('admin-support-chat-header').innerText = div.innerText.split('\n')[0];
+      loadSupportChatHistory(currentChatId);
     };
   });
 }
 
 async function loadSupportChatHistory(chatId) {
-  console.log('Loading chat history for:', chatId);
+  if (!chatId) return;
   const res = await fetch(`/api/chat/${chatId}`);
-  const messages = await res.json();
+  let messages = [];
+  try { messages = await res.json(); } catch { messages = []; }
+  const now = Date.now();
+  messages = messages.filter(m => (now - new Date(m.timestamp).getTime()) < 24 * 60 * 60 * 1000);
   const chatBody = document.getElementById('admin-support-chat-body');
   chatBody.innerHTML = messages.length
     ? messages.map(msg => `
         <div class="${msg.isAdmin ? 'admin-message' : 'user-message'}" style="margin-bottom:7px;">
-          <b>${msg.isAdmin ? 'Ви' : (msg.userName || 'Користувач')}:</b> ${msg.message}
+          <b style="color:${msg.isAdmin ? '#673ee5' : '#222'}">${msg.isAdmin ? 'Ви' : escapeHtml(msg.userName) || 'Користувач'}:</b> ${escapeHtml(msg.message)}
         </div>
       `).join('')
     : '<div style="color:#aaa;text-align:center;margin:16px 0;">Немає повідомлень</div>';
@@ -282,15 +288,31 @@ document.getElementById('admin-support-chat-form').onsubmit = async function(e) 
   await fetch('/api/chat', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ chatId: currentChatId, userId: currentChatId, userName: 'Адмін', message: msg, isAdmin: true })
+    body: JSON.stringify({
+      chatId: currentChatId,
+      userId: 'admin',
+      userName: 'Адміністратор',
+      message: msg,
+      isAdmin: true
+    })
   });
 
   input.value = '';
   loadSupportChatHistory(currentChatId); 
 };
 
+function escapeHtml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 loadSupportChatUsers();
 setInterval(() => { 
+  loadSupportChatUsers();
   if (currentChatId) loadSupportChatHistory(currentChatId); 
-}, 3000);
+}, 10000);

@@ -20,3 +20,22 @@ router.get('/:chatId', async (req, res) => {
 });
 
 module.exports = router;
+router.get('/', async (req, res) => {
+  // Групуємо по chatId та дістаємо останнє повідомлення в кожному чаті
+  const aggr = await ChatMessage.aggregate([
+    {
+      $sort: { timestamp: -1 }
+    },
+    {
+      $group: {
+        _id: "$chatId",
+        lastMessage: { $first: "$message" },
+        lastUserName: { $first: "$userName" },
+        lastIsAdmin: { $first: "$isAdmin" },
+        lastTime: { $first: "$timestamp" }
+      }
+    },
+    { $sort: { lastTime: -1 } }
+  ]);
+  res.json({ success: true, chats: aggr });
+});

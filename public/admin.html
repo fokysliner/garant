@@ -31,15 +31,14 @@
     </table>
   </main>
   
-<div class="admin-support-chat-wrapper" style="display: flex; align-items: flex-start; margin-bottom: 36px; gap:24px;">
-  <div id="admin-chat-users-list" style="width:240px; min-width:200px; max-height:350px; overflow-y:auto; background:#f6f3fd; border-radius:9px; box-shadow:0 1px 5px #edeaff; padding:10px;">
-  </div>
-  <div id="admin-support-chat-window" style="flex:1; display:flex; flex-direction:column; background:#fff; border-radius:9px; box-shadow:0 1px 8px #e7e2fa; min-height:280px;">
-    <div id="admin-support-chat-header" style="font-weight:600; padding:12px 16px; border-bottom:1px solid #ece9fa;">Виберіть користувача</div>
-    <div id="admin-support-chat-body" style="flex:1; height:220px; overflow-y:auto; padding:12px 16px;"></div>
-    <form id="admin-support-chat-form" style="display:flex; gap:6px; padding:10px 12px; border-top:1px solid #ece9fa;">
-      <input id="admin-support-chat-input" type="text" placeholder="Введіть повідомлення..." style="flex:1;">
-      <button type="submit" class="btn-primary">Надіслати</button>
+<div id="admin-chat-wrapper" style="display: flex; width: 100%; height: 500px;">
+  <div id="chat-list" style="width: 240px; background: #f6f2ff; overflow-y: auto; border-radius: 8px 0 0 8px;"></div>
+  <div style="flex: 1; display: flex; flex-direction: column; border: 1px solid #eee;">
+    <div id="chat-title" style="padding: 18px 16px 0 16px; font-weight: bold; min-height: 48px;">Виберіть користувача</div>
+    <div id="chat-history" style="flex: 1; overflow-y: auto; padding: 10px 16px;"></div>
+    <form id="chat-form" style="display: flex; padding: 12px;">
+      <input id="chat-input" autocomplete="off" placeholder="Введіть повідомлення..." style="flex:1; padding: 8px 10px; border-radius: 7px; border: 1px solid #aaa;" />
+      <button style="margin-left:10px;" type="submit" class="btn-primary">Надіслати</button>
     </form>
   </div>
 </div>
