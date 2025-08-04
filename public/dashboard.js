@@ -669,12 +669,15 @@ document.getElementById('support-chat-form').addEventListener('submit', async fu
     alert('Помилка: Не визначено userId.');
     return;
   }
-
 const chatId = localStorage.getItem('chatId');
+
 await fetch(`${API_BASE}/api/chat`, {
   method: 'POST',
-  headers: { 'Content-Type':'application/json' },
-  body: JSON.stringify({ chatId, userId, userName, message, isAdmin: false }) 
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({ chatId, userId, userName, message, isAdmin: false })
 });
 
 
@@ -683,20 +686,23 @@ await fetch(`${API_BASE}/api/chat`, {
 });
 
 async function loadChatHistory() {
-  const chatId = localStorage.getItem('chatId'); 
-  if (!chatId) return; 
-  const res = await fetch(`${API_BASE}/api/chat/${chatId}`, { 
-  headers: { 'Authorization': `Bearer ${token}` } 
- });
+  const chatId = localStorage.getItem('chatId');
+  if (!chatId) return;
+
+  const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
   const messages = await res.json();
   const chatBody = document.getElementById('support-chat-body');
   chatBody.innerHTML = '';
   messages.forEach(msg => {
     chatBody.innerHTML += `
       <div class="${msg.isAdmin ? 'admin-message' : 'user-message'}">
-        <b>${msg.isAdmin ? 'Адміністратор' : (msg.userName || 'Ви')}:</b> 
+        <b>${msg.isAdmin ? 'Адміністратор' : (msg.userName || 'Ви')}:</b>
         ${msg.message}
       </div>`;
   });
 }
-
