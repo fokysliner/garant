@@ -27,7 +27,8 @@ fetch('/api/me', {
     localStorage.setItem('userId', user._id); 
     console.log('USER ID set in localStorage:', user._id);
     localStorage.setItem('chatId', user._id);  
-
+loadChatHistory();
+setInterval(loadChatHistory, 3000);
 
     const balance = user.balance || 0;
     const locked = user.lockedBalance || 0; 
@@ -684,7 +685,9 @@ await fetch(`${API_BASE}/api/chat`, {
 async function loadChatHistory() {
   const chatId = localStorage.getItem('chatId'); 
   if (!chatId) return; 
-  const res = await fetch(`${API_BASE}/api/chat/${chatId}`);
+  const res = await fetch(`${API_BASE}/api/chat/${chatId}`, { 
+  headers: { 'Authorization': `Bearer ${token}` } 
+ });
   const messages = await res.json();
   const chatBody = document.getElementById('support-chat-body');
   chatBody.innerHTML = '';
@@ -697,5 +700,3 @@ async function loadChatHistory() {
   });
 }
 
-setInterval(loadChatHistory, 3000); 
-loadChatHistory();
