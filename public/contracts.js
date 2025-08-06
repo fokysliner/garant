@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const dealId = params.get('dealId');
@@ -17,7 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     headers: { 'Authorization': `Bearer ${token}` }
   })
     .then(res => res.json())
-    .then(deal => {
+    .then(resp => {
+      // Якщо API повертає {deal: {...}}
+      const deal = resp.deal || resp;
       if (!deal || !deal._id) {
         document.getElementById('deal-details').innerHTML = '<b style="color:red;">Угоду не знайдено!</b>';
         return;
