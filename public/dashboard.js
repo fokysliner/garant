@@ -115,16 +115,22 @@ function escapeHtml(text) {
     if (!deal) return;
 
     document.getElementById('deal-modal-title').textContent = deal.title || "Деталі угоди";
-    document.getElementById('deal-modal-body').innerHTML = `
-      <b>Статус:</b> ${renderStatus(deal.status)}<br>
-      <b>Сума:</b> ${deal.amount.toFixed(2)} UAH<br>
-      <b>Комісія:</b> ${deal.fee.toFixed(2)} UAH (${deal.commissionPayer === 'partner' ? 'Партнер' : deal.commissionPayer === 'me' ? 'Я' : '50/50'})<br>
-      <b>Тип:</b> ${deal.type === 'individual' ? 'Фізична особа' : 'Компанія'}<br>
-      <b>Роль:</b> ${deal.role === 'buyer' ? 'Покупець' : 'Продавець'}<br>
-      <b>Строк виконання:</b> ${new Date(deal.deadline).toLocaleDateString('uk')}<br>
-      <b>Опис угоди:</b> <span style="color:#7b37e9; white-space:pre-line">${deal.description ? escapeHtml(deal.description) : '—'}</span>
+document.getElementById('deal-modal-body').innerHTML = `
+  <b>Статус:</b> ${renderStatus(deal.status)}<br>
+  <b>Сума:</b> ${deal.amount.toFixed(2)} UAH<br>
+  <b>Комісія:</b> ${deal.fee.toFixed(2)} UAH (${deal.commissionPayer === 'partner' ? 'Партнер' : deal.commissionPayer === 'me' ? 'Я' : '50/50'})<br>
+  <b>Тип:</b> ${deal.type === 'individual' ? 'Фізична особа' : 'Компанія'}<br>
+  <b>Роль:</b> ${deal.role === 'buyer' ? 'Покупець' : 'Продавець'}<br>
+  <b>Строк виконання:</b> ${new Date(deal.deadline).toLocaleDateString('uk')}<br>
+  <b>Опис угоди:</b> <span style="color:#7b37e9; white-space:pre-line">${deal.description ? escapeHtml(deal.description) : '—'}</span><br>
+  <b>Посилання на угоду:</b>
+  <a href="https://grandgarant.online/contracts.html?dealId=${deal._id}" 
+     target="_blank" 
+     style="color:#7b37e9;word-break:break-all;">
+    https://grandgarant.online/contracts.html?dealId=${deal._id}
+  </a>
+`;
 
-    `;
     document.getElementById('deal-modal').style.display = 'block';
   });
 
