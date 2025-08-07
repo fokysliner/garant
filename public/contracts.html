@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="contracts.css" />
 </head>
 <body>
+  <div id="page-loader">
+  <div class="loader-animation">
+    <div class="loader-dot"></div>
+    <div class="loader-dot"></div>
+    <div class="loader-dot"></div>
+    <div class="loader-dot"></div>
+  </div>
+  <div class="loader-title">Завантаження...</div>
+</div>
+
   <div id="deal-details" style="max-width:400px;margin:32px auto;padding:28px 18px;background:#fff;border-radius:18px;box-shadow:0 4px 40px #e5deff;">
     <h2 id="deal-title"></h2>
     <p><b>Сума:</b> <span id="deal-amount"></span> UAH</p>
@@ -19,5 +29,19 @@
     <div id="deal-action-result" style="margin-top:24px;color:#8050ec;"></div>
   </div>
   <script src="contracts.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Випадкова затримка 2-5 сек
+  const min = 2000, max = 5000;
+  const ms = Math.floor(Math.random() * (max - min)) + min;
+  setTimeout(() => {
+    document.getElementById('page-loader').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('page-loader').style.display = 'none';
+    }, 800);
+  }, ms);
+});
+</script>
+
 </body>
 </html>
