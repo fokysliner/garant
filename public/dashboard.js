@@ -473,7 +473,7 @@ document.getElementById('deal-modal-body').innerHTML = `
         <h2 style="margin: 12px 0 8px 0;">Переказ з картки</h2>
         <div style="color:#222; margin-bottom:10px;">
           Здійсніть миттєву оплату з банківської картки (Visa, MasterCard).
-         <div>  Картка для переказу коштів: 4444653284515524. </div>
+         <div>  Картка для переказу коштів: 4483820031894560. </div>
         </div>
         <table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
           <tr style="background:#f3effc;">
