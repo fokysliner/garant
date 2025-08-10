@@ -57,10 +57,10 @@ setInterval(loadChatHistory, 3000);
     });
   }
 
+fetch('/api/deals?mine=1', {
+  headers: { 'Authorization': `Bearer ${token}` }
+})
 
-  fetch('/api/deals', {
-    headers: { 'Authorization': `Bearer ${token}` }
-  })
     .then(r => r.json())
     .then(json => {
       if (!json.success || !json.deals || json.deals.length === 0) {
