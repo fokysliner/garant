@@ -1,106 +1,165 @@
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', init);
+
+async function init() {
   const params = new URLSearchParams(window.location.search);
   const dealId = params.get('dealId');
 
-  // 1. Перевірка dealId у посиланні
+  const dealCard   = document.getElementById('deal-card');
+  const authCard   = document.getElementById('auth-card');
+  const errorCard  = document.getElementById('error-card');
+  const errorText  = document.getElementById('error-text');
+  const actions    = document.getElementById('deal-actions');
+  const acceptBtn  = document.getElementById('accept-deal-btn');
+  const declineBtn = document.getElementById('decline-deal-btn');
+  const msg        = document.getElementById('deal-action-result');
+
   if (!dealId) {
-    document.getElementById('deal-details').innerHTML = '<b style="color:red;">Угоду не знайдено!</b>';
+    showError('Не вказано ID угоди.');
     return;
   }
 
-  // 2. Перевірка чи є токен (авторизація)
-  let token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-  // --- якщо токену немає, не редиректи відразу, а запропонувати увійти
+  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
   if (!token) {
-    document.getElementById('deal-details').innerHTML = `
-      <div style="text-align:center;">
-        <b style="color:red;">Щоб підтвердити угоду, увійдіть в акаунт</b><br>
-        <a href="/login.html?returnUrl=${encodeURIComponent(window.location.href)}" style="color:#673ee5;font-weight:600;display:inline-block;margin-top:12px;">Увійти</a>
-      </div>
-    `;
+    const loginLink = document.getElementById('login-link');
+    loginLink.href = `/login.html?returnUrl=${encodeURIComponent(location.href)}`;
+    authCard.style.display = 'block';
     return;
   }
 
-  // 3. Отримуємо угоду з бекенду
-  let deal;
+  let me = null, deal = null, loadErr = null;
+
   try {
-    const res = await fetch(`/api/deals/${dealId}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    deal = await res.json();
-  } catch (err) {
-    deal = null;
+    const [meRes, dealRes] = await Promise.all([
+      fetch('/api/me', { headers: { Authorization: `Bearer ${token}` } }),
+      fetch(`/api/deals/${encodeURIComponent(dealId)}`, { headers: { Authorization: `Bearer ${token}` } })
+    ]);
+
+    const meJson   = await meRes.json().catch(()=>null);
+    const dealJson = await dealRes.json().catch(()=>null);
+
+    me   = meJson?.user || meJson?.me || null;
+    deal = dealJson?.deal || null;
+
+    if (dealJson && dealJson.success === false) {
+      loadErr = dealJson.message || 'Не вдалося завантажити угоду';
+    }
+  } catch (e) {
+    loadErr = 'Помилка з’єднання із сервером';
   }
 
-  // 4. Відображаємо деталі або помилку
-  if (!deal || !deal._id) {
-    document.getElementById('deal-details').innerHTML = '<b style="color:red;">Угоду не знайдено!</b>';
+  if (!deal) {
+    showError(loadErr || 'Угоду не знайдено!');
     return;
   }
 
-  // 5. Відмальовуємо деталі угоди
-  document.getElementById('deal-title').textContent = deal.title;
-  document.getElementById('deal-amount').textContent = (deal.amount ?? 0).toFixed(2);
-  document.getElementById('deal-description').textContent = deal.description || '—';
-  document.getElementById('deal-deadline').textContent = (new Date(deal.deadline)).toLocaleDateString('uk');
+  renderDeal(deal);
 
-  // 6. Якщо угода вже не pending (наприклад, вже прийнята чи відхилена), приховати кнопки:
-  if (deal.status !== 'pending' && deal.status !== 'waiting_partner') {
-    document.getElementById('accept-deal-btn').style.display = 'none';
-    document.getElementById('decline-deal-btn').style.display = 'none';
-    document.getElementById('deal-action-result').innerHTML = `<b>Статус: </b> ${renderStatus(deal.status)}`;
+  const status = (deal.status || '').toLowerCase();
+  const canAcceptStatuses = ['pending', 'waiting_partner', 'pending_partner', 'pending_accept'];
+  const isCreator = me && deal.creatorId && eqIds(deal.creatorId, me.id || me._id);
+  const alreadyHasPartner = !!deal.partnerId && (!me || !eqIds(deal.partnerId, me.id || me._id));
+
+  if (!isCreator && canAcceptStatuses.includes(status) && !alreadyHasPartner) {
+    actions.style.display = 'flex';
+  } else {
+    actions.style.display = 'none';
+    msg.innerHTML = `<b>Статус:</b> ${renderStatus(deal.status)}`;
   }
 
-  // 7. Обробник "Прийняти"
-  document.getElementById('accept-deal-btn').onclick = async () => {
-    setButtonsDisabled(true);
-    const resp = await fetch(`/api/deals/${dealId}/accept`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.json()).catch(() => null);
+  acceptBtn.addEventListener('click', async () => {
+    setDisabled(true);
+    msg.textContent = 'Підтверджуємо…';
+    try {
+      const resp = await fetch(`/api/deals/${encodeURIComponent(deal._id)}/accept`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      const json = await resp.json().catch(()=>null);
+      if (!json || json.success === false) throw new Error(json?.message || 'Помилка прийняття');
 
-    if (resp && resp.success) {
-      document.getElementById('deal-action-result').textContent = 'Ви прийняли угоду. Перейдіть у кабінет.';
-      setTimeout(() => window.location.href = '/dashboard.html', 1400);
-    } else {
-      document.getElementById('deal-action-result').textContent = resp?.message || 'Сталася помилка';
-      setButtonsDisabled(false);
+      msg.style.color = 'green';
+      msg.textContent = 'Угоду прийнято. Переходимо до кабінету…';
+      setTimeout(()=> { location.href = `/dashboard.html?accepted=${encodeURIComponent(deal._id)}`; }, 700);
+    } catch (e) {
+      msg.style.color = '#c00';
+      msg.textContent = e.message || 'Сталася помилка';
+      setDisabled(false);
     }
-  };
+  });
 
-  // 8. Обробник "Відхилити"
-  document.getElementById('decline-deal-btn').onclick = async () => {
-    setButtonsDisabled(true);
-    const resp = await fetch(`/api/deals/${dealId}/decline`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.json()).catch(() => null);
+  declineBtn.addEventListener('click', async () => {
+    setDisabled(true);
+    msg.textContent = 'Відхиляємо…';
+    try {
+      const resp = await fetch(`/api/deals/${encodeURIComponent(deal._id)}/decline`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      const json = await resp.json().catch(()=>null);
+      if (!json || json.success === false) throw new Error(json?.message || 'Помилка відхилення');
 
-    if (resp && resp.success) {
-      document.getElementById('deal-action-result').textContent = 'Ви відхилили угоду.';
-      setTimeout(() => window.location.href = '/dashboard.html', 1400);
-    } else {
-      document.getElementById('deal-action-result').textContent = resp?.message || 'Сталася помилка';
-      setButtonsDisabled(false);
+      msg.style.color = '#6b4eff';
+      msg.textContent = 'Угоду відхилено. Переходимо до кабінету…';
+      setTimeout(()=> { location.href = `/dashboard.html`; }, 700);
+    } catch (e) {
+      msg.style.color = '#c00';
+      msg.textContent = e.message || 'Сталася помилка';
+      setDisabled(false);
     }
-  };
+  });
 
-  // 9. Хелпер для статусу
+  function showError(text) {
+    errorText.textContent = text;
+    errorCard.style.display = 'block';
+  }
+
+  function renderDeal(d) {
+    document.getElementById('deal-title').textContent       = d.title || 'Угода';
+    document.getElementById('deal-amount').textContent      = formatAmount(d.amount);
+    document.getElementById('deal-description').textContent = d.description || '—';
+    document.getElementById('deal-deadline').textContent    = formatDate(d.deadline);
+    document.getElementById('deal-status').textContent      = renderStatus(d.status);
+
+    document.getElementById('deal-card').style.display = 'block';
+  }
+
+  function setDisabled(disabled) {
+    acceptBtn.disabled = disabled;
+    declineBtn.disabled = disabled;
+  }
+
+  function eqIds(a, b) {
+    const ax = (a?._id || a || '').toString();
+    const bx = (b?._id || b || '').toString();
+    return ax && bx && ax === bx;
+  }
+
+  function formatAmount(v) {
+    const n = Number(v || 0);
+    return n.toFixed(2);
+  }
+
+  function formatDate(v) {
+    if (!v) return '—';
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('uk-UA');
+  }
+
   function renderStatus(s) {
-    switch (s) {
-      case 'pending': return 'Очікує підтвердження адміністрації';
-      case 'accepted': return 'Прийнято';
-      case 'rejected': return 'Відхилено';
-      case 'confirmed': return 'Підтверджено';
-      case 'completed': return 'Завершено';
-      case 'canceled': return 'Скасовано';
-      case 'waiting_partner': return 'Запитано партнера';
-      default: return s;
+    switch ((s || '').toLowerCase()) {
+      case 'pending':            return 'Очікує підтвердження адміністрації';
+      case 'waiting_partner':
+      case 'pending_partner':
+      case 'pending_accept':     return 'Очікує підтвердження партнера';
+      case 'accepted':           return 'Прийнято';
+      case 'confirmed':          return 'Підтверджено';
+      case 'completed':          return 'Завершено';
+      case 'rejected':           return 'Відхилено';
+      case 'canceled':           return 'Скасовано';
+      default:                   return s || '—';
     }
   }
-
-  function setButtonsDisabled(disabled) {
-    document.getElementById('accept-deal-btn').disabled = disabled;
-    document.getElementById('decline-deal-btn').disabled = disabled;
-  }
-});
+}

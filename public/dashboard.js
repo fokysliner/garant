@@ -1,3 +1,12 @@
+const qs = new URLSearchParams(location.search);
+if (qs.get('accepted')) {
+  const toast = document.createElement('div');
+  toast.textContent = 'Угоду прийнято та додано у ваш список.';
+  toast.style.cssText = 'position:fixed;bottom:18px;right:18px;background:#1faa5b;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.15);z-index:99;';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(), 2500);
+}
+
 const API_BASE = 'https://grandgarant.online'; 
 
 let token;
@@ -645,20 +654,16 @@ if (activeFilter === 'active') {
   renderDeals(filtered);
 }
 
-// ==== CHAT SUPPORT LOGIC ====
 
-// Додаємо унікальний chatId у localStorage (одноразово при першому заході)
 function getOrCreateChatId() {
   let chatId = localStorage.getItem('chatId');
   if (!chatId) {
-    // або генеруй тут рандомно, або використовуй userId з профілю, якщо він унікальний
     chatId = 'chat_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chatId', chatId);
   }
   return chatId;
 }
 
-// 1. Відкриття чату — показати привітання, завантажити історію
 const supportChatBtn    = document.getElementById('support-chat-btn');
 const supportChatWindow = document.getElementById('support-chat-window');
 const supportChatClose  = document.getElementById('support-chat-close');
@@ -676,7 +681,6 @@ supportChatClose.onclick = () => {
   supportChatWindow.style.display = 'none';
 };
 
-// 2. Відправлення повідомлення
 supportChatForm.addEventListener('submit', async e => {
   e.preventDefault();
   const msg = supportChatInput.value.trim();
@@ -697,7 +701,6 @@ supportChatForm.addEventListener('submit', async e => {
   loadChatHistory();
 });
 
-// 3. Завантаження історії
 async function loadChatHistory() {
   const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
     headers: { 'Authorization': `Bearer ${token}` }
@@ -707,7 +710,6 @@ async function loadChatHistory() {
     messages = await res.json();
   } catch { messages = []; }
 
-  // Відфільтрувати лише за останні 24 години
   const now = Date.now();
   messages = messages.filter(m => (now - new Date(m.timestamp).getTime()) < 24 * 60 * 60 * 1000);
 
@@ -725,10 +727,8 @@ async function loadChatHistory() {
   });
   supportChatBody.innerHTML += `<div style="font-size:12px;color:#aaa;text-align:right;">Код чату: <b>${chatId}</b></div>`;
 }
-// Автооновлення історії
 setInterval(loadChatHistory, 3500);
 
-// Екранування HTML
 function escapeHtml(text) {
   if (!text) return '';
   return text

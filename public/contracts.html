@@ -5,43 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Підтвердження угоди | GrandGarant</title>
   <link rel="stylesheet" href="contracts.css" />
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#f7f6ff; }
+    .container { max-width: 540px; margin: 36px auto; padding: 24px 18px; background:#fff; border-radius:18px; box-shadow:0 4px 40px #e5deff; }
+    .title { margin: 0 0 8px 0; font-size: 22px; color:#2a235b; }
+    .meta p { margin: 6px 0; }
+    .btn { padding: 10px 16px; border-radius: 10px; border: 1px solid #d8cffc; background:#fff; cursor:pointer; }
+    .btn-primary { background:#6b4eff; color:#fff; border-color:#6b4eff; }
+    .btn-outline { background:#fff; color:#6b4eff; }
+    .hint { margin-top: 14px; color:#6b4eff; min-height: 20px; }
+    #page-loader { position:fixed; inset:0; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9; transition: opacity .8s; }
+    .loader-animation { display:flex; gap:8px; margin-bottom:10px; }
+    .loader-dot { width:10px; height:10px; border-radius:50%; background:#6b4eff; animation: b 1.2s infinite ease-in-out; }
+    .loader-dot:nth-child(2){ animation-delay:.15s } .loader-dot:nth-child(3){ animation-delay:.3s } .loader-dot:nth-child(4){ animation-delay:.45s }
+    @keyframes b { 0%,80%,100%{ transform:scale(0)} 40%{ transform:scale(1)} }
+    .danger { color:#c00 }
+    .muted { color:#6b6b8a }
+    .row { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
+  </style>
 </head>
 <body>
   <div id="page-loader">
-  <div class="loader-animation">
-    <div class="loader-dot"></div>
-    <div class="loader-dot"></div>
-    <div class="loader-dot"></div>
-    <div class="loader-dot"></div>
-  </div>
-  <div class="loader-title">Завантаження...</div>
-</div>
-
-  <div id="deal-details" style="max-width:400px;margin:32px auto;padding:28px 18px;background:#fff;border-radius:18px;box-shadow:0 4px 40px #e5deff;">
-    <h2 id="deal-title"></h2>
-    <p><b>Сума:</b> <span id="deal-amount"></span> UAH</p>
-    <p><b>Опис:</b> <span id="deal-description"></span></p>
-    <p><b>Строк виконання:</b> <span id="deal-deadline"></span></p>
-    <div style="margin-top:24px;">
-      <button id="accept-deal-btn" class="btn btn-primary">Прийняти угоду</button>
-      <button id="decline-deal-btn" class="btn btn-outline" style="margin-left:12px;">Відхилити</button>
+    <div class="loader-animation">
+      <div class="loader-dot"></div>
+      <div class="loader-dot"></div>
+      <div class="loader-dot"></div>
+      <div class="loader-dot"></div>
     </div>
-    <div id="deal-action-result" style="margin-top:24px;color:#8050ec;"></div>
+    <div class="loader-title">Завантаження…</div>
   </div>
+
+  <div class="container" id="deal-card" style="display:none;">
+    <h2 class="title" id="deal-title">Угода</h2>
+    <div class="meta">
+      <p><b>Сума:</b> <span id="deal-amount">—</span> UAH</p>
+      <p><b>Опис:</b> <span id="deal-description">—</span></p>
+      <p><b>Строк виконання:</b> <span id="deal-deadline">—</span></p>
+      <p class="muted"><b>Статус:</b> <span id="deal-status">—</span></p>
+    </div>
+
+    <div class="row" id="deal-actions" style="display:none;">
+      <button id="accept-deal-btn" class="btn btn-primary">Прийняти угоду</button>
+      <button id="decline-deal-btn" class="btn btn-outline">Відхилити</button>
+    </div>
+
+    <div id="deal-action-result" class="hint"></div>
+  </div>
+
+  <div class="container" id="auth-card" style="display:none; text-align:center;">
+    <div class="danger" style="font-weight:600;">Щоб підтвердити угоду, увійдіть в акаунт</div>
+    <a id="login-link" href="#" class="btn btn-primary" style="margin-top:12px; display:inline-block;">Увійти</a>
+  </div>
+
+  <div class="container" id="error-card" style="display:none; text-align:center;">
+    <div class="danger" id="error-text">Угоду не знайдено!</div>
+  </div>
+
   <script src="contracts.js"></script>
   <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Випадкова затримка 2-5 сек
-  const min = 2000, max = 5000;
-  const ms = Math.floor(Math.random() * (max - min)) + min;
-  setTimeout(() => {
-    document.getElementById('page-loader').style.opacity = '0';
-    setTimeout(() => {
-      document.getElementById('page-loader').style.display = 'none';
-    }, 800);
-  }, ms);
-});
-</script>
-
+    document.addEventListener('DOMContentLoaded', function() {
+      const min = 600, max = 1600; 
+      const ms = Math.floor(Math.random() * (max - min)) + min;
+      setTimeout(() => {
+        const pl = document.getElementById('page-loader');
+        pl.style.opacity = '0';
+        setTimeout(() => { pl.style.display = 'none'; }, 800);
+      }, ms);
+    });
+  </script>
 </body>
 </html>
