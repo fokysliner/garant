@@ -7,75 +7,90 @@ if (qs.get('accepted')) {
   setTimeout(()=>toast.remove(), 2500);
 }
 
-const API_BASE = 'https://grandgarant.online'; 
+const API_BASE = 'https://grandgarant.online';
 
 let token;
+let deals = []; // глобально — для фільтрів/пошуку
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderStatus(s) {
+  switch (String(s || '').toLowerCase()) {
+    case 'pending':          return 'Очікує підтвердження адміністації';
+    case 'accepted':         return 'Прийнято';
+    case 'rejected':         return 'Відхилено';
+    case 'confirmed':        return 'Підтверджено';
+    case 'completed':        return 'Завершено';
+    case 'canceled':         return 'Скасовано';
+    case 'waiting_partner':  return 'Запитано партнера';
+    default:                 return s || '—';
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
   if (!token) return window.location.href = '/index.html';
 
-
-  const personBtn = document.getElementById('person-btn');
-  const companyBtn = document.getElementById('company-btn');
+  const personBtn   = document.getElementById('person-btn');
+  const companyBtn  = document.getElementById('company-btn');
   const amountInput = document.getElementById('topup-amount');
-  const invoiceModal = document.getElementById('invoice-modal');
+  const invoiceModal= document.getElementById('invoice-modal');
 
-  let deals = [];
+  // Профіль + баланс
+  fetch('/api/me', { headers: { 'Authorization': `Bearer ${token}` }})
+    .then(r => r.json())
+    .then(user => {
+      if (!user || !user.firstName) return;
 
+      document.getElementById('user-name').textContent = `${user.firstName} ${user.lastName}`;
+      localStorage.setItem('userId', user._id);
+      localStorage.setItem('chatId', user._id);
 
-fetch('/api/me', {
-  headers: { 'Authorization': `Bearer ${token}` }
-})
-  .then(r => r.json())
-  .then(user => {
-    if (!user || !user.firstName) return;
+      const balance = user.balance || 0;
+      const locked  = user.lockedBalance || 0;
+      document.getElementById('balance-available').innerHTML = `${balance.toFixed(2)} <span class="uah">UAH</span>`;
+      document.getElementById('balance-locked').innerHTML    = `${locked.toFixed(2)} <span class="uah">UAH</span>`;
 
-    document.getElementById('user-name').textContent = `${user.firstName} ${user.lastName}`;
+      loadChatHistory();
+      setInterval(loadChatHistory, 3000);
+    })
+    .catch(err => console.error('Error fetching user data:', err));
 
-    localStorage.setItem('userId', user._id); 
-    console.log('USER ID set in localStorage:', user._id);
-    localStorage.setItem('chatId', user._id);  
-loadChatHistory();
-setInterval(loadChatHistory, 3000);
-
-    const balance = user.balance || 0;
-    const locked = user.lockedBalance || 0; 
-    document.getElementById('balance-available').innerHTML = `${balance.toFixed(2)} <span class="uah">UAH</span>`;
-    document.getElementById('balance-locked').innerHTML = `${locked.toFixed(2)} <span class="uah">UAH</span>`;
-  })
-  .catch(error => {
-    console.error('Error fetching user data:', error);
-  });
-
-
-
+  // Кнопка створення угоди
   const createDealBtn = document.getElementById('create-deal-btn');
   if (createDealBtn) {
-    createDealBtn.addEventListener('click', () => {
-      window.location.href = 'create-deal.html';
-    });
+    createDealBtn.addEventListener('click', () => window.location.href = 'create-deal.html');
   }
 
-fetch('/api/deals?mine=1', {
-  headers: { 'Authorization': `Bearer ${token}` }
-})
-
-    .then(r => r.json())
-    .then(json => {
-      if (!json.success || !json.deals || json.deals.length === 0) {
+  // Завантаження угод
+  function fetchDeals() {
+    return fetch('/api/deals?mine=1', { headers: { 'Authorization': `Bearer ${token}` }})
+      .then(r => r.json())
+      .then(json => {
+        deals = (json && json.success && Array.isArray(json.deals)) ? json.deals : [];
+        renderDeals(deals);
+      })
+      .catch(err => {
+        console.error('Error fetching deals:', err);
         renderDeals([]);
-        return;
-      }
-      deals = json.deals;
-      renderDeals(deals);
-    })
-    .catch(error => {
-      console.error('Error fetching deals:', error);
-      renderDeals([]);
-    });
+      });
+  }
+  fetchDeals();
 
+  // Якщо прийшли з ?accepted=... — легкий рефреш списку через мить
+  if (qs.get('accepted')) {
+    setTimeout(fetchDeals, 600);
+  }
 
+  // Рендер списку угод
   function renderDeals(dealsArr) {
     const list = document.querySelector('#deals .deals-list');
     list.innerHTML = '';
@@ -89,29 +104,20 @@ fetch('/api/deals?mine=1', {
       el.dataset.id = deal._id;
       el.innerHTML = `
         <div class="deal-header">
-          <span class="deal-title">${deal.title}</span>
+          <span class="deal-title">${escapeHtml(deal.title)}</span>
           <span class="deal-deadline">до ${new Date(deal.deadline).toLocaleDateString('uk')}</span>
           <span class="deal-status">${renderStatus(deal.status)}</span>
         </div>
         <div class="deal-body">
-          <div>Сума: ${deal.amount.toFixed(2)} UAH</div>
-          <div>Комісія: ${deal.fee.toFixed(2)} UAH (${deal.commissionPayer === 'me' ? 'Я' : deal.commissionPayer === 'partner' ? 'Партнер' : '50/50'})</div>
+          <div>Сума: ${Number(deal.amount||0).toFixed(2)} UAH</div>
+          <div>Комісія: ${Number(deal.fee||0).toFixed(2)} UAH (${deal.commissionPayer === 'me' ? 'Я' : deal.commissionPayer === 'partner' ? 'Партнер' : '50/50'})</div>
         </div>
       `;
       list.appendChild(el);
     });
   }
-function escapeHtml(text) {
-  if (!text) return '';
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
-
+  // Модал деталей угоди
   document.querySelector('.deals-list').addEventListener('click', function(e) {
     const item = e.target.closest('.deal-item');
     if (!item) return;
@@ -120,83 +126,63 @@ function escapeHtml(text) {
     item.classList.add('active');
 
     const deal = deals.find(d => d._id === item.dataset.id);
-    console.log('DEAL:', deal);
     if (!deal) return;
 
     document.getElementById('deal-modal-title').textContent = deal.title || "Деталі угоди";
-document.getElementById('deal-modal-body').innerHTML = `
-  <b>Статус:</b> ${renderStatus(deal.status)}<br>
-  <b>Сума:</b> ${deal.amount.toFixed(2)} UAH<br>
-  <b>Комісія:</b> ${deal.fee.toFixed(2)} UAH (${deal.commissionPayer === 'partner' ? 'Партнер' : deal.commissionPayer === 'me' ? 'Я' : '50/50'})<br>
-  <b>Тип:</b> ${deal.type === 'individual' ? 'Фізична особа' : 'Компанія'}<br>
-  <b>Роль:</b> ${deal.role === 'buyer' ? 'Покупець' : 'Продавець'}<br>
-  <b>Строк виконання:</b> ${new Date(deal.deadline).toLocaleDateString('uk')}<br>
-  <b>Опис угоди:</b> <span style="color:#7b37e9; white-space:pre-line">${deal.description ? escapeHtml(deal.description) : '—'}</span><br>
-  <b>Посилання на угоду:</b>
-  <a href="https://grandgarant.online/contracts.html?dealId=${deal._id}" 
-     target="_blank" 
-     style="color:#7b37e9;word-break:break-all;">
-    https://grandgarant.online/contracts.html?dealId=${deal._id}
-  </a>
-`;
-
+    document.getElementById('deal-modal-body').innerHTML = `
+      <b>Статус:</b> ${renderStatus(deal.status)}<br>
+      <b>Сума:</b> ${Number(deal.amount||0).toFixed(2)} UAH<br>
+      <b>Комісія:</b> ${Number(deal.fee||0).toFixed(2)} UAH (${deal.commissionPayer === 'partner' ? 'Партнер' : deal.commissionPayer === 'me' ? 'Я' : '50/50'})<br>
+      <b>Тип:</b> ${deal.type === 'individual' ? 'Фізична особа' : 'Компанія'}<br>
+      <b>Роль:</b> ${deal.role === 'buyer' ? 'Покупець' : 'Продавець'}<br>
+      <b>Строк виконання:</b> ${new Date(deal.deadline).toLocaleDateString('uk')}<br>
+      <b>Опис угоди:</b> <span style="color:#7b37e9; white-space:pre-line">${deal.description ? escapeHtml(deal.description) : '—'}</span><br>
+      <b>Посилання на угоду:</b>
+      <a href="https://grandgarant.online/contracts.html?dealId=${deal._id}" target="_blank" style="color:#7b37e9;word-break:break-all;">
+        https://grandgarant.online/contracts.html?dealId=${deal._id}
+      </a>
+    `;
     document.getElementById('deal-modal').style.display = 'block';
   });
-
   document.getElementById('deal-modal-close').onclick = () => {
     document.getElementById('deal-modal').style.display = 'none';
   };
 
-
+  // Таби
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab, .content').forEach(el => el.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById(tab.dataset.tab).classList.add('active');
-      if (tab.dataset.tab === 'history') {
-        loadHistory();
-      }
-      if (tab.dataset.tab === 'profile') {
-        loadProfileData();
-      }
+      if (tab.dataset.tab === 'history') loadHistory();
+      if (tab.dataset.tab === 'profile') loadProfileData();
     });
   });
 
-
+  // Вихід
   document.getElementById('logout').addEventListener('click', () => {
     localStorage.removeItem('authToken');
     window.location.replace('index.html');
   });
 
-
+  // Історія
   document.getElementById('history-date-from').value = new Date(Date.now() - 2592000000).toISOString().split('T')[0];
-  document.getElementById('history-date-to').value = new Date().toISOString().split('T')[0];
-
-  document.getElementById('history-show-btn').addEventListener('click', function() {
-    loadHistory();
-  });
+  document.getElementById('history-date-to').value   = new Date().toISOString().split('T')[0];
+  document.getElementById('history-show-btn').addEventListener('click', loadHistory);
 
   function loadHistory() {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-    const account = document.getElementById('history-account').value;
+    const account  = document.getElementById('history-account').value;
     const currency = document.getElementById('history-currency').value;
     const dateFrom = document.getElementById('history-date-from').value;
-    const dateTo = document.getElementById('history-date-to').value;
+    const dateTo   = document.getElementById('history-date-to').value;
 
-    const params = new URLSearchParams({
-      account, currency, dateFrom, dateTo
-    }).toString();
+    const params = new URLSearchParams({ account, currency, dateFrom, dateTo }).toString();
 
-    fetch(`/api/history?${params}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
+    fetch(`/api/history?${params}`, { headers: { 'Authorization': `Bearer ${token}` }})
       .then(r => r.json())
-      .then(json => {
-        renderHistory(json.operations || []);
-      })
-      .catch(err => {
-        renderHistory([]);
-      });
+      .then(json => renderHistory(json.operations || []))
+      .catch(() => renderHistory([]));
   }
 
   function renderHistory(ops) {
@@ -212,7 +198,7 @@ document.getElementById('deal-modal-body').innerHTML = `
       html += `<tr>
         <td>${new Date(op.date).toLocaleDateString('uk')}</td>
         <td>${renderOpType(op.type)}</td>
-        <td>${op.amount.toFixed(2)}</td>
+        <td>${Number(op.amount||0).toFixed(2)}</td>
         <td>${op.currency}</td>
         <td>${renderOpStatus(op.status)}</td>
       </tr>`;
@@ -220,7 +206,6 @@ document.getElementById('deal-modal-body').innerHTML = `
     html += `</table>`;
     list.innerHTML = html;
   }
-
   function renderOpType(type) {
     switch(type) {
       case 'in': return 'Поповнення';
@@ -233,48 +218,46 @@ document.getElementById('deal-modal-body').innerHTML = `
     switch(status) {
       case 'success': return 'Успішно';
       case 'pending': return 'В обробці';
-      case 'failed': return 'Відхилено';
-      default: return status;
+      case 'failed':  return 'Відхилено';
+      default:        return status;
     }
   }
 
-
+  // Профіль
   function loadProfileData() {
-    fetch('/api/me', { headers: { 'Authorization': `Bearer ${token}` } })
+    fetch('/api/me', { headers: { 'Authorization': `Bearer ${token}` }})
       .then(r => r.json())
       .then(user => {
-        document.getElementById('profile-name').textContent = `${user.firstName || '-'} ${user.lastName || ''}`;
-        document.getElementById('profile-city').textContent = user.city || '-';
+        document.getElementById('profile-name').textContent  = `${user.firstName || '-'} ${user.lastName || ''}`;
+        document.getElementById('profile-city').textContent  = user.city || '-';
         document.getElementById('profile-phone').textContent = user.phone || '-';
         document.getElementById('profile-email').textContent = user.email || '-';
       })
       .catch(() => {
-        document.getElementById('profile-name').textContent = 'Немає даних';
-        document.getElementById('profile-city').textContent = '-';
+        document.getElementById('profile-name').textContent  = 'Немає даних';
+        document.getElementById('profile-city').textContent  = '-';
         document.getElementById('profile-phone').textContent = '-';
         document.getElementById('profile-email').textContent = '-';
       });
   }
 
-
   let profileEditMode = false;
-
   document.getElementById('profile-edit-btn').addEventListener('click', function() {
     if (profileEditMode) return;
     profileEditMode = true;
 
-    const name = document.getElementById('profile-name').textContent.trim().split(' ');
-    const city = document.getElementById('profile-city').textContent.trim();
+    const name  = document.getElementById('profile-name').textContent.trim().split(' ');
+    const city  = document.getElementById('profile-city').textContent.trim();
     const phone = document.getElementById('profile-phone').textContent.trim();
     const email = document.getElementById('profile-email').textContent.trim();
 
     document.getElementById('profile-card').innerHTML = `
       <form id="profile-edit-form" style="padding:30px 26px 18px 26px;">
         <input type="text" id="edit-firstname" placeholder="Ім'я" value="${name[0] || ''}" required style="width:100%;margin-bottom:10px;padding:8px;">
-        <input type="text" id="edit-lastname" placeholder="Прізвище" value="${name[1] || ''}" required style="width:100%;margin-bottom:10px;padding:8px;">
-        <input type="text" id="edit-city" placeholder="Місто" value="${city}" style="width:100%;margin-bottom:10px;padding:8px;">
-        <input type="text" id="edit-phone" placeholder="Телефон" value="${phone}" style="width:100%;margin-bottom:10px;padding:8px;">
-        <input type="email" id="edit-email" placeholder="Email" value="${email}" required style="width:100%;margin-bottom:20px;padding:8px;">
+        <input type="text" id="edit-lastname"  placeholder="Прізвище" value="${name[1] || ''}" required style="width:100%;margin-bottom:10px;padding:8px;">
+        <input type="text" id="edit-city"      placeholder="Місто" value="${escapeHtml(city)}" style="width:100%;margin-bottom:10px;padding:8px;">
+        <input type="text" id="edit-phone"     placeholder="Телефон" value="${escapeHtml(phone)}" style="width:100%;margin-bottom:10px;padding:8px;">
+        <input type="email" id="edit-email"    placeholder="Email" value="${escapeHtml(email)}" required style="width:100%;margin-bottom:20px;padding:8px;">
         <div style="display:flex;gap:14px;">
           <button type="submit" class="btn-primary" style="flex:1;">Зберегти</button>
           <button type="button" id="profile-cancel-btn" class="btn-outline" style="flex:1;">Скасувати</button>
@@ -300,15 +283,8 @@ document.getElementById('deal-modal-body').innerHTML = `
         body: JSON.stringify(data)
       })
         .then(r => r.json())
-        .then(json => {
-          profileEditMode = false;
-          loadProfileData();
-        })
-        .catch(() => {
-          alert('Помилка при збереженні');
-          profileEditMode = false;
-          loadProfileData();
-        });
+        .then(() => { profileEditMode = false; loadProfileData(); })
+        .catch(() => { alert('Помилка при збереженні'); profileEditMode = false; loadProfileData(); });
     };
 
     document.getElementById('profile-cancel-btn').onclick = function() {
@@ -317,76 +293,89 @@ document.getElementById('deal-modal-body').innerHTML = `
     };
   });
 
- 
-  document.getElementById('support-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const topic = document.getElementById('support-topic').value;
-    const message = document.getElementById('support-message').value.trim();
-    if (!topic || !message) return;
+  // Саппорт-чат
+  function getOrCreateChatId() {
+    let chatId = localStorage.getItem('chatId');
+    if (!chatId) {
+      chatId = 'chat_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('chatId', chatId);
+    }
+    return chatId;
+  }
+  const supportChatBtn    = document.getElementById('support-chat-btn');
+  const supportChatWindow = document.getElementById('support-chat-window');
+  const supportChatClose  = document.getElementById('support-chat-close');
+  const supportChatForm   = document.getElementById('support-chat-form');
+  const supportChatInput  = document.getElementById('support-chat-input');
+  const supportChatBody   = document.getElementById('support-chat-body');
+  const chatId = getOrCreateChatId();
 
-    fetch('/api/support', {
+  supportChatBtn.onclick = () => {
+    supportChatWindow.style.display = 'flex';
+    setTimeout(() => supportChatInput.focus(), 300);
+    loadChatHistory();
+  };
+  supportChatClose.onclick = () => {
+    supportChatWindow.style.display = 'none';
+  };
+  supportChatForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const msg = supportChatInput.value.trim();
+    if (!msg) return;
+    const userId   = localStorage.getItem('userId');
+    const userName = localStorage.getItem('userName') || 'Клієнт';
+    if (!userId || !chatId) return alert('Не визначено userId або chatId.');
+
+    await fetch(`${API_BASE}/api/chat`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type':  'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ topic, message })
-    })
-      .then(r => r.json())
-      .then(json => {
-        if (json.success) {
-          document.getElementById('support-success').textContent = 'Звернення надіслано!';
-          document.getElementById('support-success').style.display = 'block';
-          document.getElementById('support-form').reset();
-          loadSupportList();
-        }
-      });
+      body: JSON.stringify({ chatId, userId, userName, message: msg, isAdmin: false })
+    });
+    supportChatInput.value = '';
+    loadChatHistory();
   });
 
-
-  function loadSupportList() {
-    fetch('/api/support', {
+  async function loadChatHistory() {
+    const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(r => r.json())
-      .then(json => {
-        const listDiv = document.getElementById('support-list');
-        if (!json.list.length) {
-          listDiv.innerHTML = '<div>Немає звернень.</div>';
-          return;
-        }
-        listDiv.innerHTML = json.list.map(s =>
-          `<div style="margin-bottom:10px; padding:10px; border:1px solid #eee; border-radius:6px;">
-            <b>Тема:</b> ${s.topic}<br>
-            <b>Текст:</b> ${s.message}<br>
-            <small style="color: #888;">${new Date(s.createdAt).toLocaleString('uk')}</small>
-          </div>`
-        ).join('');
-      });
+    });
+    let messages = [];
+    try { messages = await res.json(); } catch { messages = []; }
+
+    const now = Date.now();
+    messages = messages.filter(m => (now - new Date(m.timestamp).getTime()) < 24 * 60 * 60 * 1000);
+
+    supportChatBody.innerHTML = '';
+    if (messages.length === 0) {
+      supportChatBody.innerHTML = `<div class="support-chat-empty">Напишіть нам, ми відповімо впродовж декількох хвилин.</div>
+      <div style="font-size:12px;color:#aaa;">Код вашого чату: <b>${chatId}</b></div>`;
+      return;
+    }
+    messages.forEach(m => {
+      supportChatBody.innerHTML += `
+        <div class="${m.isAdmin ? 'admin-message' : 'user-message'}">
+          <b>${m.isAdmin ? 'Адміністратор' : (m.userName || 'Ви')}:</b> ${escapeHtml(m.message)}
+        </div>`;
+    });
+    supportChatBody.innerHTML += `<div style="font-size:12px;color:#aaa;text-align:right;">Код чату: <b>${chatId}</b></div>`;
   }
+  setInterval(loadChatHistory, 3500);
 
+  // Топ-ап модалка
+  document.getElementById('topup-btn').onclick   = () => document.getElementById('topup-modal').style.display = 'flex';
+  document.getElementById('topup-close').onclick = () => document.getElementById('topup-modal').style.display = 'none';
 
-  document.getElementById('topup-btn').onclick = () => {
-    document.getElementById('topup-modal').style.display = 'flex';
-  };
-  document.getElementById('topup-close').onclick = () => {
-    document.getElementById('topup-modal').style.display = 'none';
-  };
-  personBtn.onclick = function() {
-    personBtn.classList.add('active');
-    companyBtn.classList.remove('active');
-  };
-  companyBtn.onclick = function() {
-    companyBtn.classList.add('active');
-    personBtn.classList.remove('active');
-  };
-
+  personBtn.onclick  = () => { personBtn.classList.add('active');  companyBtn.classList.remove('active'); };
+  companyBtn.onclick = () => { companyBtn.classList.add('active'); personBtn.classList.remove('active');  };
 
   document.querySelectorAll('.topup-method .btn-primary').forEach(btn => {
     btn.onclick = function(e) {
       const method = this.getAttribute('data-type');
       if (personBtn.classList.contains('active')) {
-        const amount = parseFloat(amountInput.value.replace(',', '.'));
+        const amount = parseFloat((amountInput.value || '').replace(',', '.'));
         if (!amount || amount < 1) {
           amountInput.focus();
           amountInput.style.border = '1.5px solid #e24343';
@@ -402,7 +391,6 @@ document.getElementById('deal-modal-body').innerHTML = `
   });
 
   function showInvoiceModal(method, amount) {
-    
     let html = '';
     if (method === 'bank') {
       html = `
@@ -508,233 +496,112 @@ document.getElementById('deal-modal-body').innerHTML = `
     document.getElementById('invoice-content').innerHTML = html;
     invoiceModal.style.display = 'flex';
   }
+  document.getElementById('invoice-close').onclick = () => invoiceModal.style.display = 'none';
 
+  // Вивід коштів
+  document.getElementById('withdraw-btn').onclick   = () => document.getElementById('withdraw-modal').style.display = 'flex';
+  document.getElementById('withdraw-close').onclick = () => document.getElementById('withdraw-modal').style.display = 'none';
 
-  document.getElementById('invoice-close').onclick = function() {
-    invoiceModal.style.display = 'none';
+  const withdrawPersonBtn = document.getElementById('withdraw-person-btn');
+  const withdrawCompanyBtn= document.getElementById('withdraw-company-btn');
+  const cardRow           = document.getElementById('withdraw-card-row');
+  const companyRow        = document.getElementById('withdraw-company-row');
+
+  withdrawPersonBtn.onclick = function() {
+    this.classList.add('active');
+    withdrawCompanyBtn.classList.remove('active');
+    cardRow.style.display = '';
+    companyRow.style.display = 'none';
+  };
+  withdrawCompanyBtn.onclick = function() {
+    this.classList.add('active');
+    withdrawPersonBtn.classList.remove('active');
+    cardRow.style.display = 'none';
+    companyRow.style.display = '';
   };
 
-}); 
+  document.getElementById('withdraw-confirm-btn').onclick = function() {
+    const amount = parseFloat((document.getElementById('withdraw-amount').value || '').replace(',', '.'));
+    let error = '';
 
-
-function renderStatus(s) {
-  switch (s) {
-    case 'pending': return 'Очікує підтвердження адміністації';
-    case 'accepted': return 'Прийнято';
-    case 'rejected': return 'Відхилено';
-    case 'confirmed': return 'Підтверджено';
-    case 'completed': return 'Завершено';
-    case 'canceled': return 'Скасовано';
-    case 'waiting_partner': return 'Запитано партнера';
-    default: return s;
-  }
-}
-
-
-document.getElementById('withdraw-btn').onclick = () => {
-  document.getElementById('withdraw-modal').style.display = 'flex';
-};
-document.getElementById('withdraw-close').onclick = () => {
-  document.getElementById('withdraw-modal').style.display = 'none';
-};
-
-
-const withdrawPersonBtn = document.getElementById('withdraw-person-btn');
-const withdrawCompanyBtn = document.getElementById('withdraw-company-btn');
-const cardRow = document.getElementById('withdraw-card-row');
-const companyRow = document.getElementById('withdraw-company-row');
-
-withdrawPersonBtn.onclick = function() {
-  this.classList.add('active');
-  withdrawCompanyBtn.classList.remove('active');
-  cardRow.style.display = '';
-  companyRow.style.display = 'none';
-};
-withdrawCompanyBtn.onclick = function() {
-  this.classList.add('active');
-  withdrawPersonBtn.classList.remove('active');
-  cardRow.style.display = 'none';
-  companyRow.style.display = '';
-};
-
-
-document.getElementById('withdraw-confirm-btn').onclick = function() {
-  const amount = parseFloat(document.getElementById('withdraw-amount').value.replace(',', '.'));
-  let error = '';
-  
-  if (!amount || amount < 1) {
-    error = 'Вкажіть суму для виводу (не менше 1 грн)';
-    document.getElementById('withdraw-amount').style.border = '1.5px solid #e24343';
-    setTimeout(() => document.getElementById('withdraw-amount').style.border = '', 1500);
-  }
-
-  if (withdrawPersonBtn.classList.contains('active')) {
-    const card = document.getElementById('withdraw-card').value.trim();
-    if (!card || card.length < 12) {
-      error = 'Вкажіть коректний номер картки';
-      document.getElementById('withdraw-card').style.border = '1.5px solid #e24343';
-      setTimeout(() => document.getElementById('withdraw-card').style.border = '', 1500);
+    if (!amount || amount < 1) {
+      error = 'Вкажіть суму для виводу (не менше 1 грн)';
+      document.getElementById('withdraw-amount').style.border = '1.5px solid #e24343';
+      setTimeout(() => document.getElementById('withdraw-amount').style.border = '', 1500);
     }
 
-  } else {
-    const iban = document.getElementById('withdraw-iban').value.trim();
-    const mfo = document.getElementById('withdraw-mfo').value.trim();
-    if (!iban || iban.length < 10) {
-      error = 'Вкажіть коректний IBAN';
-      document.getElementById('withdraw-iban').style.border = '1.5px solid #e24343';
-      setTimeout(() => document.getElementById('withdraw-iban').style.border = '', 1500);
+    if (withdrawPersonBtn.classList.contains('active')) {
+      const card = document.getElementById('withdraw-card').value.trim();
+      if (!card || card.length < 12) {
+        error = 'Вкажіть коректний номер картки';
+        document.getElementById('withdraw-card').style.border = '1.5px solid #e24343';
+        setTimeout(() => document.getElementById('withdraw-card').style.border = '', 1500);
+      }
+    } else {
+      const iban = document.getElementById('withdraw-iban').value.trim();
+      const mfo  = document.getElementById('withdraw-mfo').value.trim();
+      if (!iban || iban.length < 10) {
+        error = 'Вкажіть коректний IBAN';
+        document.getElementById('withdraw-iban').style.border = '1.5px solid #e24343';
+        setTimeout(() => document.getElementById('withdraw-iban').style.border = '', 1500);
+      }
+      if (!mfo) {
+        error = 'Вкажіть МФО / SWIFT';
+        document.getElementById('withdraw-mfo').style.border = '1.5px solid #e24343';
+        setTimeout(() => document.getElementById('withdraw-mfo').style.border = '', 1500);
+      }
     }
-    if (!mfo) {
-      error = 'Вкажіть МФО / SWIFT';
-      document.getElementById('withdraw-mfo').style.border = '1.5px solid #e24343';
-      setTimeout(() => document.getElementById('withdraw-mfo').style.border = '', 1500);
+
+    if (error) {
+      document.getElementById('withdraw-success').style.display = 'none';
+      document.getElementById('withdraw-success').textContent = '';
+      return;
     }
-  }
 
-  if (error) {
-    document.getElementById('withdraw-success').style.display = 'none';
-    document.getElementById('withdraw-success').textContent = '';
-    return;
-  }
+    document.getElementById('withdraw-success').textContent = 'Заявка на вивід створена!';
+    document.getElementById('withdraw-success').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('withdraw-modal').style.display = 'none';
+      document.getElementById('withdraw-success').style.display = 'none';
+      document.getElementById('withdraw-amount').value = '';
+      document.getElementById('withdraw-card').value = '';
+      document.getElementById('withdraw-iban').value = '';
+      document.getElementById('withdraw-mfo').value = '';
+    }, 1700);
+  };
 
+  // ФІЛЬТРИ та ПОШУК — ОДИН раз, всередині DOMContentLoaded
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const searchInput = document.getElementById('deal-search');
 
-  document.getElementById('withdraw-success').textContent = 'Заявка на вивід створена!';
-  document.getElementById('withdraw-success').style.display = 'block';
-  setTimeout(() => {
-    document.getElementById('withdraw-modal').style.display = 'none';
-    document.getElementById('withdraw-success').style.display = 'none';
-    document.getElementById('withdraw-amount').value = '';
-    document.getElementById('withdraw-card').value = '';
-    document.getElementById('withdraw-iban').value = '';
-    document.getElementById('withdraw-mfo').value = '';
-  }, 1700);
-};
+  filterBtns.forEach(btn => {
+    btn.onclick = function() {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      filterAndRenderDeals();
+    };
+  });
+  searchInput.oninput = () => filterAndRenderDeals();
 
-const filterBtns = document.querySelectorAll('.filter-btn');
-const searchInput = document.getElementById('deal-search');
+  function filterAndRenderDeals() {
+    const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+    const searchTerm = (searchInput.value || '').trim().toLowerCase();
 
+    let filtered = deals;
 
-filterBtns.forEach(btn => {
-  btn.onclick = function() {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    filterAndRenderDeals();
+    if (activeFilter === 'active') {
+      filtered = deals.filter(d => ['pending', 'accepted', 'confirmed'].includes(String(d.status||'').toLowerCase()));
+    } else if (activeFilter === 'completed') {
+      filtered = deals.filter(d => ['completed', 'canceled'].includes(String(d.status||'').toLowerCase()));
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(d =>
+        (d.title && d.title.toLowerCase().includes(searchTerm)) ||
+        (d._id && d._id.toLowerCase().includes(searchTerm))
+      );
+    }
+
+    renderDeals(filtered);
   }
 });
-
-
-searchInput.oninput = function() {
-  filterAndRenderDeals();
-};
-
-function filterAndRenderDeals() {
-  const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-  const searchTerm = searchInput.value.trim().toLowerCase();
-
-  let filtered = deals;
-
-if (activeFilter === 'active') {
-  filtered = deals.filter(d =>
-    d.status === 'pending' ||
-    d.status === 'accepted' ||
-    d.status === 'confirmed'
-  );
-} else if (activeFilter === 'completed') {
-  filtered = deals.filter(d => d.status === 'completed' || d.status === 'canceled');
-}
-
-
-  if (searchTerm) {
-    filtered = filtered.filter(d =>
-      (d.title && d.title.toLowerCase().includes(searchTerm)) ||
-      (d._id && d._id.toLowerCase().includes(searchTerm))
-    );
-  }
-
-  renderDeals(filtered);
-}
-
-
-function getOrCreateChatId() {
-  let chatId = localStorage.getItem('chatId');
-  if (!chatId) {
-    chatId = 'chat_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('chatId', chatId);
-  }
-  return chatId;
-}
-
-const supportChatBtn    = document.getElementById('support-chat-btn');
-const supportChatWindow = document.getElementById('support-chat-window');
-const supportChatClose  = document.getElementById('support-chat-close');
-const supportChatForm   = document.getElementById('support-chat-form');
-const supportChatInput  = document.getElementById('support-chat-input');
-const supportChatBody   = document.getElementById('support-chat-body');
-const chatId            = getOrCreateChatId();
-
-supportChatBtn.onclick = () => {
-  supportChatWindow.style.display = 'flex';
-  setTimeout(() => supportChatInput.focus(), 300);
-  loadChatHistory();
-};
-supportChatClose.onclick = () => {
-  supportChatWindow.style.display = 'none';
-};
-
-supportChatForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  const msg = supportChatInput.value.trim();
-  if (!msg) return;
-  const userId   = localStorage.getItem('userId');
-  const userName = localStorage.getItem('userName') || 'Клієнт';
-  if (!userId || !chatId) return alert('Не визначено userId або chatId.');
-
-  await fetch(`${API_BASE}/api/chat`, {
-    method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ chatId, userId, userName, message: msg, isAdmin: false })
-  });
-  supportChatInput.value = '';
-  loadChatHistory();
-});
-
-async function loadChatHistory() {
-  const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
-  let messages = [];
-  try {
-    messages = await res.json();
-  } catch { messages = []; }
-
-  const now = Date.now();
-  messages = messages.filter(m => (now - new Date(m.timestamp).getTime()) < 24 * 60 * 60 * 1000);
-
-  supportChatBody.innerHTML = '';
-  if (messages.length === 0) {
-    supportChatBody.innerHTML = `<div class="support-chat-empty">Напишіть нам, ми відповімо впродовж декількох хвилин.</div>
-    <div style="font-size:12px;color:#aaa;">Код вашого чату: <b>${chatId}</b></div>`;
-    return;
-  }
-  messages.forEach(m => {
-    supportChatBody.innerHTML += `
-      <div class="${m.isAdmin ? 'admin-message' : 'user-message'}">
-        <b>${m.isAdmin ? 'Адміністратор' : (m.userName || 'Ви')}:</b> ${escapeHtml(m.message)}
-      </div>`;
-  });
-  supportChatBody.innerHTML += `<div style="font-size:12px;color:#aaa;text-align:right;">Код чату: <b>${chatId}</b></div>`;
-}
-setInterval(loadChatHistory, 3500);
-
-function escapeHtml(text) {
-  if (!text) return '';
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}

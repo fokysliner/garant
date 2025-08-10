@@ -1263,3 +1263,11 @@ nav.mobile-nav.open {
   background: #5e4bb7;
   transform: translateY(-2px);
 }
+/* Перевизначення стилю кнопки Вхід/Реєстрація */
+.login-btn {
+  background-color: #000 !important; /* чорний фон */
+  color: #fff !important;           /* білий текст */
+}
+.login-btn:hover {
+  background-color: #222 !important; /* темно-сірий при наведенні */
+}
