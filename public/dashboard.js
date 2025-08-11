@@ -402,9 +402,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <table style="margin-bottom:12px;">
           <tr>
             <td style="vertical-align:top; padding-right:32px;">
-              <div style="margin-bottom:7px;"><b>Отримувач платежу:</b> ФОП "Керімов Ібрагім Шахін Огли "</div>
+              <div style="margin-bottom:7px;"><b>Отримувач:</b>ТОВ А-банк </div>
               <div>Код отримувача: 3872508737</div>
-              <div>Рахунок одержувача у формі IBAN: UA093052990000026000036010807</div>
+              <div>Картка для переказу коштів: 4483820031894560.</div>
               <div>МФО: 305299</div>
               <div>Банк: АТ КБ "Приватбанк"</div>
             </td>
@@ -442,9 +442,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <table style="margin-bottom:12px;">
           <tr>
             <td style="vertical-align:top; padding-right:32px;">
-              <div style="margin-bottom:7px;"><b>Отримувач:</b>ФОП "Керімов Ібрагім Шахін Огли "</div>
+              <div style="margin-bottom:7px;"><b>Отримувач:</b>ТОВ А-банк </div>
               <div>Код отримувача: 3872508737</div>
-              <div>Рахунок одержувача у формі IBAN: UA093052990000026000036010807</div>
+              <div>Картка для переказу коштів: 4483820031894560.</div>
               <div>МФО: 305299</div>
               <div>Банк: АТ КБ "Приватбанк"</div>
             </td>
